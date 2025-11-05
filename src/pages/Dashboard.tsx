@@ -5,90 +5,90 @@ import { PieChart, Pie, Cell, BarChart, Bar, LineChart, Line, XAxis, YAxis, Cart
 const COLORS = ['#3b82f6', '#ef4444', '#22c55e', '#f59e0b'];
 
 const genderData = [
-  { name: 'Male', value: 156 },
-  { name: 'Female', value: 124 },
-  { name: 'Other', value: 8 },
+  { name: 'Nam', value: 156 },
+  { name: 'Nữ', value: 124 },
+  { name: 'Khác', value: 8 },
 ];
 
 const departmentData = [
-  { name: 'Engineering', employees: 78 },
-  { name: 'Sales', employees: 45 },
+  { name: 'Kỹ thuật', employees: 78 },
+  { name: 'Kinh doanh', employees: 45 },
   { name: 'Marketing', employees: 32 },
-  { name: 'HR', employees: 15 },
-  { name: 'Finance', employees: 28 },
-  { name: 'Operations', employees: 42 },
+  { name: 'Nhân sự', employees: 15 },
+  { name: 'Tài chính', employees: 28 },
+  { name: 'Vận hành', employees: 42 },
 ];
 
 const salaryData = [
-  { month: 'Jan', cost: 245000 },
-  { month: 'Feb', cost: 248000 },
-  { month: 'Mar', cost: 252000 },
-  { month: 'Apr', cost: 258000 },
-  { month: 'May', cost: 261000 },
-  { month: 'Jun', cost: 265000 },
+  { month: 'T1', cost: 245000 },
+  { month: 'T2', cost: 248000 },
+  { month: 'T3', cost: 252000 },
+  { month: 'T4', cost: 258000 },
+  { month: 'T5', cost: 261000 },
+  { month: 'T6', cost: 265000 },
 ];
 
 const expiringContracts = [
-  { id: 'C-2024-045', employee: 'John Doe', department: 'Engineering', endDate: '2025-01-15', daysLeft: 10 },
-  { id: 'C-2024-078', employee: 'Sarah Johnson', department: 'Sales', endDate: '2025-01-22', daysLeft: 17 },
-  { id: 'C-2024-091', employee: 'Michael Chen', department: 'Marketing', endDate: '2025-01-28', daysLeft: 23 },
-  { id: 'C-2024-103', employee: 'Emily Davis', department: 'Finance', endDate: '2025-02-05', daysLeft: 31 },
+  { id: 'C-2024-045', employee: 'Nguyễn Văn A', department: 'Kỹ thuật', endDate: '15/01/2025', daysLeft: 10 },
+  { id: 'C-2024-078', employee: 'Trần Thị B', department: 'Kinh doanh', endDate: '22/01/2025', daysLeft: 17 },
+  { id: 'C-2024-091', employee: 'Lê Văn C', department: 'Marketing', endDate: '28/01/2025', daysLeft: 23 },
+  { id: 'C-2024-103', employee: 'Phạm Thị D', department: 'Tài chính', endDate: '05/02/2025', daysLeft: 31 },
 ];
 
 export default function Dashboard() {
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Dashboard Overview</h1>
-        <p className="text-muted-foreground mt-1">Welcome back! Here's what's happening with your organization.</p>
+        <h1 className="text-3xl font-bold text-foreground">Tổng quan</h1>
+        <p className="text-muted-foreground mt-1">Chào mừng trở lại! Đây là tình hình tổ chức của bạn.</p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="border-l-4 border-l-primary">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Employees</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Tổng nhân viên</CardTitle>
             <Users className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-foreground">288</div>
             <p className="text-xs text-muted-foreground mt-1">
               <TrendingUp className="h-3 w-3 inline mr-1" />
-              +12 from last month
+              +12 so với tháng trước
             </p>
           </CardContent>
         </Card>
 
         <Card className="border-l-4 border-l-green-500">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Active Contracts</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Hợp đồng đang hiệu lực</CardTitle>
             <FileText className="h-5 w-5 text-green-500" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-foreground">245</div>
-            <p className="text-xs text-muted-foreground mt-1">85% of total employees</p>
+            <p className="text-xs text-muted-foreground mt-1">85% tổng số nhân viên</p>
           </CardContent>
         </Card>
 
         <Card className="border-l-4 border-l-orange-500">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Departments</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Phòng ban</CardTitle>
             <Building2 className="h-5 w-5 text-orange-500" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-foreground">12</div>
-            <p className="text-xs text-muted-foreground mt-1">6 regional offices</p>
+            <p className="text-xs text-muted-foreground mt-1">6 văn phòng khu vực</p>
           </CardContent>
         </Card>
 
         <Card className="border-l-4 border-l-blue-500">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Monthly Payroll</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Lương hàng tháng</CardTitle>
             <DollarSign className="h-5 w-5 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-foreground">$265K</div>
-            <p className="text-xs text-muted-foreground mt-1">+2.1% from last month</p>
+            <div className="text-3xl font-bold text-foreground">6,2 tỷ VND</div>
+            <p className="text-xs text-muted-foreground mt-1">+2,1% so với tháng trước</p>
           </CardContent>
         </Card>
       </div>
@@ -97,7 +97,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Gender Distribution</CardTitle>
+            <CardTitle>Phân bổ theo giới tính</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -124,7 +124,7 @@ export default function Dashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Employees by Department</CardTitle>
+            <CardTitle>Nhân viên theo phòng ban</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -144,7 +144,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Salary Cost Trend (6 Months)</CardTitle>
+            <CardTitle>Xu hướng chi phí lương (6 tháng)</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -159,7 +159,7 @@ export default function Dashboard() {
                   dataKey="cost" 
                   stroke="hsl(var(--primary))" 
                   strokeWidth={2}
-                  name="Salary Cost ($)"
+                  name="Chi phí lương ($)"
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -170,7 +170,7 @@ export default function Dashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FileText className="h-5 w-5" />
-              Expiring Contracts
+              Hợp đồng sắp hết hạn
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -181,7 +181,7 @@ export default function Dashboard() {
                   <p className="text-xs text-muted-foreground">{contract.department}</p>
                   <div className="flex items-center justify-between mt-1">
                     <p className="text-xs text-muted-foreground">{contract.endDate}</p>
-                    <span className="text-xs font-medium text-orange-600">{contract.daysLeft} days</span>
+                    <span className="text-xs font-medium text-orange-600">{contract.daysLeft} ngày</span>
                   </div>
                 </div>
               ))}

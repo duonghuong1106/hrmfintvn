@@ -102,77 +102,77 @@ export default function UserAccounts() {
         ? { ...account, status: account.status === 'active' ? 'inactive' : 'active' }
         : account
     ));
-    toast.success('Account status updated');
+    toast.success("Đã cập nhật trạng thái tài khoản");
   };
 
   const handleDelete = (id: string) => {
     setAccounts(accounts.filter(account => account.id !== id));
-    toast.success('Account deleted successfully');
+    toast.success("Đã xóa tài khoản thành công");
   };
 
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">User Account Management</h1>
-          <p className="text-muted-foreground mt-1">Manage system user accounts and permissions</p>
+          <h1 className="text-3xl font-bold text-foreground">Quản lý tài khoản người dùng</h1>
+          <p className="text-muted-foreground mt-1">Quản lý tài khoản và phân quyền hệ thống</p>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button className="gap-2">
               <UserPlus className="h-4 w-4" />
-              Add Account
+              Thêm tài khoản
             </Button>
           </DialogTrigger>
           <DialogContent className="bg-popover">
             <DialogHeader>
-              <DialogTitle>Create New User Account</DialogTitle>
+              <DialogTitle>Tạo tài khoản người dùng mới</DialogTitle>
               <DialogDescription>
-                Add a new user account to the system. All fields are required.
+                Thêm tài khoản người dùng mới vào hệ thống. Tất cả các trường đều bắt buộc.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="fullname">Full Name</Label>
-                <Input id="fullname" placeholder="Enter full name" />
+                <Label htmlFor="fullname">Họ và tên</Label>
+                <Input id="fullname" placeholder="Nhập họ và tên" />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" type="email" placeholder="user@company.com" />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="username">Username</Label>
-                <Input id="username" placeholder="username" />
+                <Label htmlFor="username">Tên đăng nhập</Label>
+                <Input id="username" placeholder="tendangnhap" />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Mật khẩu</Label>
                 <Input id="password" type="password" placeholder="••••••••" />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="role">Role</Label>
+                <Label htmlFor="role">Vai trò</Label>
                 <Select>
                   <SelectTrigger id="role">
-                    <SelectValue placeholder="Select role" />
+                    <SelectValue placeholder="Chọn vai trò" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
-                    <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="hr">HR Manager</SelectItem>
-                    <SelectItem value="manager">Department Manager</SelectItem>
-                    <SelectItem value="employee">Employee</SelectItem>
+                    <SelectItem value="admin">Quản trị viên</SelectItem>
+                    <SelectItem value="hr">Quản lý nhân sự</SelectItem>
+                    <SelectItem value="manager">Trưởng phòng</SelectItem>
+                    <SelectItem value="employee">Nhân viên</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="department">Department</Label>
+                <Label htmlFor="department">Phòng ban</Label>
                 <Select>
                   <SelectTrigger id="department">
-                    <SelectValue placeholder="Select department" />
+                    <SelectValue placeholder="Chọn phòng ban" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
-                    <SelectItem value="engineering">Engineering</SelectItem>
-                    <SelectItem value="hr">Human Resources</SelectItem>
-                    <SelectItem value="sales">Sales</SelectItem>
-                    <SelectItem value="finance">Finance</SelectItem>
+                    <SelectItem value="engineering">Kỹ thuật</SelectItem>
+                    <SelectItem value="hr">Nhân sự</SelectItem>
+                    <SelectItem value="sales">Kinh doanh</SelectItem>
+                    <SelectItem value="finance">Tài chính</SelectItem>
                     <SelectItem value="marketing">Marketing</SelectItem>
                   </SelectContent>
                 </Select>
@@ -180,13 +180,13 @@ export default function UserAccounts() {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancel
+                Hủy
               </Button>
               <Button onClick={() => {
-                toast.success('Account created successfully');
+                toast.success("Đã tạo tài khoản thành công");
                 setIsAddDialogOpen(false);
               }}>
-                Create Account
+                Tạo tài khoản
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -196,11 +196,11 @@ export default function UserAccounts() {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>User Accounts</CardTitle>
+            <CardTitle>Tài khoản người dùng</CardTitle>
             <div className="relative w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search accounts..."
+                placeholder="Tìm kiếm tài khoản..."
                 className="pl-9"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -212,14 +212,14 @@ export default function UserAccounts() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Username</TableHead>
-                <TableHead>Full Name</TableHead>
+                <TableHead>Tên đăng nhập</TableHead>
+                <TableHead>Họ và tên</TableHead>
                 <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Department</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Created Date</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>Vai trò</TableHead>
+                <TableHead>Phòng ban</TableHead>
+                <TableHead>Trạng thái</TableHead>
+                <TableHead>Ngày tạo</TableHead>
+                <TableHead className="text-right">Thao tác</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

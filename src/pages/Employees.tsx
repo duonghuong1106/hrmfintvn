@@ -117,12 +117,12 @@ export default function Employees() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Employee Profile Management</h1>
-          <p className="text-muted-foreground mt-1">View and manage employee information</p>
+          <h1 className="text-3xl font-bold text-foreground">Quản lý hồ sơ nhân viên</h1>
+          <p className="text-muted-foreground mt-1">Xem và quản lý thông tin nhân viên</p>
         </div>
         <Button className="gap-2">
           <UserPlus className="h-4 w-4" />
-          Add Employee
+          Thêm nhân viên
         </Button>
       </div>
 
@@ -132,7 +132,7 @@ export default function Employees() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search by name or employee ID..."
+                placeholder="Tìm theo tên hoặc mã nhân viên..."
                 className="pl-9"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -140,26 +140,26 @@ export default function Employees() {
             </div>
             <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
               <SelectTrigger className="w-full md:w-48">
-                <SelectValue placeholder="All Departments" />
+                <SelectValue placeholder="Tất cả phòng ban" />
               </SelectTrigger>
               <SelectContent className="bg-popover">
-                <SelectItem value="all">All Departments</SelectItem>
-                <SelectItem value="Engineering">Engineering</SelectItem>
-                <SelectItem value="Sales">Sales</SelectItem>
+                <SelectItem value="all">Tất cả phòng ban</SelectItem>
+                <SelectItem value="Engineering">Kỹ thuật</SelectItem>
+                <SelectItem value="Sales">Kinh doanh</SelectItem>
                 <SelectItem value="Marketing">Marketing</SelectItem>
-                <SelectItem value="Finance">Finance</SelectItem>
-                <SelectItem value="HR">HR</SelectItem>
+                <SelectItem value="Finance">Tài chính</SelectItem>
+                <SelectItem value="HR">Nhân sự</SelectItem>
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-full md:w-48">
-                <SelectValue placeholder="All Status" />
+                <SelectValue placeholder="Tất cả trạng thái" />
               </SelectTrigger>
               <SelectContent className="bg-popover">
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="on-leave">On Leave</SelectItem>
-                <SelectItem value="terminated">Terminated</SelectItem>
+                <SelectItem value="all">Tất cả trạng thái</SelectItem>
+                <SelectItem value="active">Đang làm việc</SelectItem>
+                <SelectItem value="on-leave">Nghỉ phép</SelectItem>
+                <SelectItem value="terminated">Đã nghỉ việc</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -168,14 +168,14 @@ export default function Employees() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Employee ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Gender</TableHead>
-                <TableHead>Department</TableHead>
-                <TableHead>Position</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Contact</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>Mã NV</TableHead>
+                <TableHead>Họ và tên</TableHead>
+                <TableHead>Giới tính</TableHead>
+                <TableHead>Phòng ban</TableHead>
+                <TableHead>Chức vụ</TableHead>
+                <TableHead>Trạng thái</TableHead>
+                <TableHead>Liên hệ</TableHead>
+                <TableHead className="text-right">Thao tác</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

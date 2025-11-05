@@ -21,13 +21,13 @@ import {
 } from "@/components/ui/sidebar";
 
 const menuItems = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "User Accounts", url: "/accounts", icon: Users },
-  { title: "Employees", url: "/employees", icon: UserCircle },
-  { title: "Contracts", url: "/contracts", icon: FileText },
-  { title: "Attendance & Payroll", url: "/attendance", icon: Clock },
-  { title: "Departments", url: "/departments", icon: Building2 },
-  { title: "Reports", url: "/reports", icon: BarChart3 },
+  { title: "Tổng quan", url: "/", icon: LayoutDashboard },
+  { title: "Tài khoản người dùng", url: "/accounts", icon: Users },
+  { title: "Hồ sơ nhân viên", url: "/employees", icon: UserCircle },
+  { title: "Quản lý hợp đồng", url: "/contracts", icon: FileText },
+  { title: "Chấm công & Lương", url: "/attendance", icon: Clock },
+  { title: "Phòng ban", url: "/departments", icon: Building2 },
+  { title: "Báo cáo & Thống kê", url: "/reports", icon: BarChart3 },
 ];
 
 export function AppSidebar() {
@@ -44,14 +44,14 @@ export function AppSidebar() {
             </div>
             {!isCollapsed && (
               <div>
-                <h1 className="text-lg font-semibold text-sidebar-foreground">HRM System</h1>
+                <h1 className="text-lg font-semibold text-sidebar-foreground">Hệ thống HRM</h1>
               </div>
             )}
           </div>
         </div>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Main Menu</SidebarGroupLabel>
+          <SidebarGroupLabel>Menu chính</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (

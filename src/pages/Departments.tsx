@@ -76,68 +76,68 @@ export default function Departments() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Department Management</h1>
-          <p className="text-muted-foreground mt-1">Manage organizational departments and structure</p>
+          <h1 className="text-3xl font-bold text-foreground">Quản lý phòng ban</h1>
+          <p className="text-muted-foreground mt-1">Quản lý cơ cấu tổ chức và phòng ban</p>
         </div>
         <Button className="gap-2">
           <Plus className="h-4 w-4" />
-          Add Department
+          Thêm phòng ban
         </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="border-l-4 border-l-primary">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Departments</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Tổng số phòng ban</CardTitle>
             <Building2 className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-foreground">{mockDepartments.length}</div>
-            <p className="text-xs text-muted-foreground mt-1">Across 3 buildings</p>
+            <p className="text-xs text-muted-foreground mt-1">Trên 3 tòa nhà</p>
           </CardContent>
         </Card>
 
         <Card className="border-l-4 border-l-green-500">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Employees</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Tổng số nhân viên</CardTitle>
             <Users className="h-5 w-5 text-green-500" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-foreground">
               {mockDepartments.reduce((sum, dept) => sum + dept.employeeCount, 0)}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Active workforce</p>
+            <p className="text-xs text-muted-foreground mt-1">Nhân viên đang làm việc</p>
           </CardContent>
         </Card>
 
         <Card className="border-l-4 border-l-orange-500">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Avg. Team Size</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Quy mô TB</CardTitle>
             <Users className="h-5 w-5 text-orange-500" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-foreground">
               {Math.round(mockDepartments.reduce((sum, dept) => sum + dept.employeeCount, 0) / mockDepartments.length)}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Employees per department</p>
+            <p className="text-xs text-muted-foreground mt-1">Nhân viên mỗi phòng ban</p>
           </CardContent>
         </Card>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Department Overview</CardTitle>
+          <CardTitle>Danh sách phòng ban</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Department ID</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Manager</TableHead>
-                <TableHead>Employees</TableHead>
-                <TableHead>Location</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>Mã phòng ban</TableHead>
+                <TableHead>Tên phòng ban</TableHead>
+                <TableHead>Quản lý</TableHead>
+                <TableHead>Số nhân viên</TableHead>
+                <TableHead>Vị trí</TableHead>
+                <TableHead className="text-right">Thao tác</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

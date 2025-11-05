@@ -22,7 +22,7 @@ export function Header() {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search employees, contracts, departments..."
+            placeholder="Tìm kiếm nhân viên, hợp đồng, phòng ban..."
             className="pl-9 bg-background"
           />
         </div>
@@ -42,24 +42,24 @@ export function Header() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-80 bg-popover">
-            <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+            <DropdownMenuLabel>Thông báo</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <div className="flex flex-col gap-1">
-                <p className="text-sm font-medium">Contract Expiring Soon</p>
-                <p className="text-xs text-muted-foreground">John Doe's contract expires in 7 days</p>
+                <p className="text-sm font-medium">Hợp đồng sắp hết hạn</p>
+                <p className="text-xs text-muted-foreground">Hợp đồng của Nguyễn Văn A sẽ hết hạn trong 7 ngày</p>
               </div>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <div className="flex flex-col gap-1">
-                <p className="text-sm font-medium">New Employee Added</p>
-                <p className="text-xs text-muted-foreground">Jane Smith joined the Engineering team</p>
+                <p className="text-sm font-medium">Nhân viên mới</p>
+                <p className="text-xs text-muted-foreground">Trần Thị B đã gia nhập phòng Kỹ thuật</p>
               </div>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <div className="flex flex-col gap-1">
-                <p className="text-sm font-medium">Payroll Due</p>
-                <p className="text-xs text-muted-foreground">Monthly payroll processing due tomorrow</p>
+                <p className="text-sm font-medium">Đến hạn xử lý lương</p>
+                <p className="text-xs text-muted-foreground">Xử lý lương tháng sẽ đến hạn vào ngày mai</p>
               </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -76,12 +76,12 @@ export function Header() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="bg-popover">
-            <DropdownMenuLabel>Admin Account</DropdownMenuLabel>
+            <DropdownMenuLabel>Tài khoản quản trị</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile Settings</DropdownMenuItem>
-            <DropdownMenuItem>System Preferences</DropdownMenuItem>
+            <DropdownMenuItem>Cài đặt tài khoản</DropdownMenuItem>
+            <DropdownMenuItem>Tùy chọn hệ thống</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive">Logout</DropdownMenuItem>
+            <DropdownMenuItem className="text-destructive">Đăng xuất</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
