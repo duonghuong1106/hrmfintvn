@@ -5,8 +5,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, Calendar } from "lucide-react";
+import { Download, Calendar, Plus, Edit } from "lucide-react";
 import { toast } from "sonner";
+import { AttendanceDialog } from "@/components/attendance/AttendanceDialog";
 
 // Mock data
 const months = [
@@ -134,6 +135,33 @@ const payrollData = [
 
 export default function AttendancePayroll() {
   const [selectedMonth, setSelectedMonth] = useState("2024-06");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogMode, setDialogMode] = useState<"create" | "edit">("create");
+  const [editingRecord, setEditingRecord] = useState<any>(null);
+
+  const handleAddAttendance = () => {
+    setDialogMode("create");
+    setEditingRecord(null);
+    setDialogOpen(true);
+  };
+
+  const handleEditAttendance = (employee: any, record: any) => {
+    setDialogMode("edit");
+    setEditingRecord({
+      employeeId: employee.employeeId,
+      date: record.date,
+      checkIn: record.checkIn === "Nghỉ" ? "" : record.checkIn,
+      checkOut: record.checkOut === "-" ? "" : record.checkOut,
+      isAbsent: record.checkIn === "Nghỉ",
+      overtimeHours: "",
+    });
+    setDialogOpen(true);
+  };
+
+  const handleSubmitAttendance = (data: any) => {
+    console.log("Attendance data:", data);
+    // Logic để cập nhật dữ liệu chấm công
+  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -209,10 +237,16 @@ export default function AttendancePayroll() {
                     Theo dõi giờ vào/ra và tổng hợp công của nhân viên
                   </CardDescription>
                 </div>
-                <Button onClick={() => handleExportPDF("bảng chấm công")}>
-                  <Download className="h-4 w-4 mr-2" />
-                  Xuất PDF
-                </Button>
+                <div className="flex gap-2">
+                  <Button onClick={handleAddAttendance}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Thêm chấm công
+                  </Button>
+                  <Button variant="outline" onClick={() => handleExportPDF("bảng chấm công")}>
+                    <Download className="h-4 w-4 mr-2" />
+                    Xuất PDF
+                  </Button>
+                </div>
               </div>
             </CardHeader>
             <CardContent>
@@ -244,6 +278,7 @@ export default function AttendancePayroll() {
                           <TableHead>Giờ vào</TableHead>
                           <TableHead>Giờ ra</TableHead>
                           <TableHead>Trạng thái</TableHead>
+                          <TableHead className="w-[80px]">Thao tác</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -262,6 +297,15 @@ export default function AttendancePayroll() {
                                   Đúng giờ
                                 </Badge>
                               )}
+                            </TableCell>
+                            <TableCell>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleEditAttendance(employee, record)}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
                             </TableCell>
                           </TableRow>
                         ))}
@@ -412,6 +456,14 @@ export default function AttendancePayroll() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <AttendanceDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onSubmit={handleSubmitAttendance}
+        defaultValues={editingRecord}
+        mode={dialogMode}
+      />
     </div>
   );
 }
