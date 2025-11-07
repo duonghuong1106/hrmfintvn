@@ -27,108 +27,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { FileText, Search, Eye, Download, Plus } from "lucide-react";
 import { toast } from "sonner";
-
-interface Contract {
-  id: string;
-  employeeName: string;
-  employeeId: string;
-  type: "probation" | "fixed" | "indefinite" | "freelance";
-  startDate: string;
-  endDate: string;
-  status: "active" | "expiring" | "expired" | "cancelled";
-  baseSalary: number;
-  allowances: number;
-  position: string;
-  department: string;
-  pdfUrl: string;
-}
-
-const mockContracts: Contract[] = [
-  {
-    id: "HD001",
-    employeeName: "Nguyễn Văn An",
-    employeeId: "NV001",
-    type: "indefinite",
-    startDate: "2023-01-15",
-    endDate: "-",
-    status: "active",
-    baseSalary: 20000000,
-    allowances: 3000000,
-    position: "Kỹ sư phần mềm Senior",
-    department: "Kỹ thuật",
-    pdfUrl: "/placeholder.pdf",
-  },
-  {
-    id: "HD002",
-    employeeName: "Trần Thị Bình",
-    employeeId: "NV002",
-    type: "fixed",
-    startDate: "2024-01-01",
-    endDate: "2025-12-31",
-    status: "active",
-    baseSalary: 15000000,
-    allowances: 2000000,
-    position: "Chuyên viên Marketing",
-    department: "Marketing",
-    pdfUrl: "/placeholder.pdf",
-  },
-  {
-    id: "HD003",
-    employeeName: "Phạm Minh Châu",
-    employeeId: "NV003",
-    type: "fixed",
-    startDate: "2024-06-01",
-    endDate: "2025-05-31",
-    status: "expiring",
-    baseSalary: 18000000,
-    allowances: 2500000,
-    position: "Kỹ sư phần mềm",
-    department: "Kỹ thuật",
-    pdfUrl: "/placeholder.pdf",
-  },
-  {
-    id: "HD004",
-    employeeName: "Lê Hoàng Dũng",
-    employeeId: "NV004",
-    type: "probation",
-    startDate: "2025-01-01",
-    endDate: "2025-03-01",
-    status: "active",
-    baseSalary: 12000000,
-    allowances: 1000000,
-    position: "Nhân viên kinh doanh",
-    department: "Kinh doanh",
-    pdfUrl: "/placeholder.pdf",
-  },
-  {
-    id: "HD005",
-    employeeName: "Võ Thị Em",
-    employeeId: "NV005",
-    type: "fixed",
-    startDate: "2023-03-15",
-    endDate: "2024-03-14",
-    status: "expired",
-    baseSalary: 14000000,
-    allowances: 1500000,
-    position: "Chuyên viên nhân sự",
-    department: "Nhân sự",
-    pdfUrl: "/placeholder.pdf",
-  },
-  {
-    id: "HD006",
-    employeeName: "Hoàng Văn Phong",
-    employeeId: "NV006",
-    type: "freelance",
-    startDate: "2024-11-01",
-    endDate: "2025-02-28",
-    status: "active",
-    baseSalary: 25000000,
-    allowances: 0,
-    position: "Cố vấn tài chính",
-    department: "Tài chính",
-    pdfUrl: "/placeholder.pdf",
-  },
-];
+import { mockContracts, getEmployeeById, type Contract } from "@/data/mockData";
 
 const contractTypeLabels = {
   probation: "Thử việc",
@@ -159,9 +58,12 @@ export default function Contracts() {
   const [showDetailDialog, setShowDetailDialog] = useState(false);
 
   const filteredContracts = mockContracts.filter((contract) => {
+    const employee = getEmployeeById(contract.employeeId);
+    const employeeName = employee?.name || "";
     const matchesSearch =
-      contract.employeeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      contract.id.toLowerCase().includes(searchQuery.toLowerCase());
+      employeeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      contract.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      contract.employeeId.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesType = typeFilter === "all" || contract.type === typeFilter;
     const matchesStatus = statusFilter === "all" || contract.status === statusFilter;
     return matchesSearch && matchesType && matchesStatus;
@@ -256,17 +158,19 @@ export default function Contracts() {
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredContracts.map((contract) => (
-                  <TableRow key={contract.id}>
-                    <TableCell className="font-medium">{contract.id}</TableCell>
-                    <TableCell>
-                      <div>
-                        <div className="font-medium">{contract.employeeName}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {contract.employeeId}
+                filteredContracts.map((contract) => {
+                  const employee = getEmployeeById(contract.employeeId);
+                  return (
+                    <TableRow key={contract.id}>
+                      <TableCell className="font-medium">{contract.id}</TableCell>
+                      <TableCell>
+                        <div>
+                          <div className="font-medium">{employee?.name || "N/A"}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {contract.employeeId}
+                          </div>
                         </div>
-                      </div>
-                    </TableCell>
+                      </TableCell>
                     <TableCell>{contractTypeLabels[contract.type]}</TableCell>
                     <TableCell>{contract.startDate}</TableCell>
                     <TableCell>{contract.endDate}</TableCell>
@@ -297,7 +201,8 @@ export default function Contracts() {
                       </div>
                     </TableCell>
                   </TableRow>
-                ))
+                  );
+                })
               )}
             </TableBody>
           </Table>
@@ -313,38 +218,40 @@ export default function Contracts() {
             </DialogDescription>
           </DialogHeader>
 
-          {selectedContract && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <div className="text-sm text-muted-foreground mb-1">Mã hợp đồng</div>
-                  <div className="font-medium">{selectedContract.id}</div>
-                </div>
-                <div>
-                  <div className="text-sm text-muted-foreground mb-1">Trạng thái</div>
-                  <Badge
-                    variant="secondary"
-                    className={statusColors[selectedContract.status]}
-                  >
-                    {statusLabels[selectedContract.status]}
-                  </Badge>
-                </div>
-                <div>
-                  <div className="text-sm text-muted-foreground mb-1">Tên nhân viên</div>
-                  <div className="font-medium">{selectedContract.employeeName}</div>
-                </div>
-                <div>
-                  <div className="text-sm text-muted-foreground mb-1">Mã nhân viên</div>
-                  <div className="font-medium">{selectedContract.employeeId}</div>
-                </div>
-                <div>
-                  <div className="text-sm text-muted-foreground mb-1">Chức vụ</div>
-                  <div className="font-medium">{selectedContract.position}</div>
-                </div>
-                <div>
-                  <div className="text-sm text-muted-foreground mb-1">Phòng ban</div>
-                  <div className="font-medium">{selectedContract.department}</div>
-                </div>
+          {selectedContract && (() => {
+            const employee = getEmployeeById(selectedContract.employeeId);
+            return (
+              <div className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-sm text-muted-foreground mb-1">Mã hợp đồng</div>
+                    <div className="font-medium">{selectedContract.id}</div>
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground mb-1">Trạng thái</div>
+                    <Badge
+                      variant="secondary"
+                      className={statusColors[selectedContract.status]}
+                    >
+                      {statusLabels[selectedContract.status]}
+                    </Badge>
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground mb-1">Tên nhân viên</div>
+                    <div className="font-medium">{employee?.name || "N/A"}</div>
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground mb-1">Mã nhân viên</div>
+                    <div className="font-medium">{selectedContract.employeeId}</div>
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground mb-1">Chức vụ</div>
+                    <div className="font-medium">{employee?.position || "N/A"}</div>
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground mb-1">Phòng ban</div>
+                    <div className="font-medium">{employee?.department || "N/A"}</div>
+                  </div>
                 <div>
                   <div className="text-sm text-muted-foreground mb-1">Loại hợp đồng</div>
                   <div className="font-medium">
@@ -413,7 +320,8 @@ export default function Contracts() {
                 </Card>
               </div>
             </div>
-          )}
+            );
+          })()}
         </DialogContent>
       </Dialog>
     </div>

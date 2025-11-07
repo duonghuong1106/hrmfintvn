@@ -29,6 +29,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
+import { mockEmployees } from "@/data/mockData";
 
 const attendanceSchema = z.object({
   employeeId: z.string().min(1, { message: "Vui lòng chọn nhân viên" }),
@@ -63,14 +64,6 @@ interface AttendanceDialogProps {
   defaultValues?: Partial<AttendanceFormValues>;
   mode: "create" | "edit";
 }
-
-const employees = [
-  { id: "NV001", name: "Nguyễn Văn An" },
-  { id: "NV002", name: "Trần Thị Bình" },
-  { id: "NV003", name: "Lê Văn Cường" },
-  { id: "NV004", name: "Phạm Thị Dung" },
-  { id: "NV005", name: "Hoàng Văn Em" },
-];
 
 export function AttendanceDialog({
   open,
@@ -137,9 +130,9 @@ export function AttendanceDialog({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {employees.map((emp) => (
-                        <SelectItem key={emp.id} value={emp.id}>
-                          {emp.id} - {emp.name}
+                      {mockEmployees.map((emp) => (
+                        <SelectItem key={emp.employeeId} value={emp.employeeId}>
+                          {emp.employeeId} - {emp.name}
                         </SelectItem>
                       ))}
                     </SelectContent>

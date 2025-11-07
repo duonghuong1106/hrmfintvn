@@ -19,76 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { UserPlus, Search, Eye } from "lucide-react";
-
-interface Employee {
-  id: string;
-  employeeId: string;
-  name: string;
-  gender: string;
-  department: string;
-  position: string;
-  status: 'active' | 'on-leave' | 'terminated';
-  email: string;
-  phone: string;
-}
-
-const mockEmployees: Employee[] = [
-  {
-    id: '1',
-    employeeId: 'EMP-2024-001',
-    name: 'John Doe',
-    gender: 'Male',
-    department: 'Engineering',
-    position: 'Senior Developer',
-    status: 'active',
-    email: 'john.doe@company.com',
-    phone: '+1 234-567-8901',
-  },
-  {
-    id: '2',
-    employeeId: 'EMP-2024-002',
-    name: 'Sarah Johnson',
-    gender: 'Female',
-    department: 'Sales',
-    position: 'Sales Manager',
-    status: 'active',
-    email: 'sarah.johnson@company.com',
-    phone: '+1 234-567-8902',
-  },
-  {
-    id: '3',
-    employeeId: 'EMP-2024-003',
-    name: 'Michael Chen',
-    gender: 'Male',
-    department: 'Marketing',
-    position: 'Marketing Specialist',
-    status: 'active',
-    email: 'michael.chen@company.com',
-    phone: '+1 234-567-8903',
-  },
-  {
-    id: '4',
-    employeeId: 'EMP-2024-004',
-    name: 'Emily Davis',
-    gender: 'Female',
-    department: 'Finance',
-    position: 'Financial Analyst',
-    status: 'on-leave',
-    email: 'emily.davis@company.com',
-    phone: '+1 234-567-8904',
-  },
-  {
-    id: '5',
-    employeeId: 'EMP-2024-005',
-    name: 'Robert Wilson',
-    gender: 'Male',
-    department: 'HR',
-    position: 'HR Coordinator',
-    status: 'active',
-    email: 'robert.wilson@company.com',
-    phone: '+1 234-567-8905',
-  },
-];
+import { mockEmployees, type Employee } from "@/data/mockData";
 
 export default function Employees() {
   const [employees] = useState<Employee[]>(mockEmployees);
@@ -144,11 +75,11 @@ export default function Employees() {
               </SelectTrigger>
               <SelectContent className="bg-popover">
                 <SelectItem value="all">Tất cả phòng ban</SelectItem>
-                <SelectItem value="Engineering">Kỹ thuật</SelectItem>
-                <SelectItem value="Sales">Kinh doanh</SelectItem>
+                <SelectItem value="Kỹ thuật">Kỹ thuật</SelectItem>
+                <SelectItem value="Kinh doanh">Kinh doanh</SelectItem>
                 <SelectItem value="Marketing">Marketing</SelectItem>
-                <SelectItem value="Finance">Tài chính</SelectItem>
-                <SelectItem value="HR">Nhân sự</SelectItem>
+                <SelectItem value="Tài chính">Tài chính</SelectItem>
+                <SelectItem value="Nhân sự">Nhân sự</SelectItem>
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
