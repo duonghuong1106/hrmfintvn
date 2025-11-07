@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, Calendar, Plus, Edit } from "lucide-react";
+import { Download, Calendar, FileSpreadsheet, Calculator, Printer, FileText, Edit } from "lucide-react";
 import { toast } from "sonner";
 import { AttendanceDialog } from "@/components/attendance/AttendanceDialog";
-import { mockAttendanceData, mockPayrollData, getEmployeeById } from "@/data/mockData";
+import { mockAttendancePayrollData, getEmployeeById, calculateTotalSalary } from "@/data/mockData";
 
 // Mock data
 const months = [
@@ -23,31 +22,21 @@ const months = [
 export default function AttendancePayroll() {
   const [selectedMonth, setSelectedMonth] = useState("2024-06");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogMode, setDialogMode] = useState<"create" | "edit">("create");
   const [editingRecord, setEditingRecord] = useState<any>(null);
 
-  const handleAddAttendance = () => {
-    setDialogMode("create");
-    setEditingRecord(null);
-    setDialogOpen(true);
-  };
-
-  const handleEditAttendance = (employee: any, record: any) => {
-    setDialogMode("edit");
+  const handleEditRecord = (record: any) => {
+    const employee = getEmployeeById(record.employeeId);
     setEditingRecord({
-      employeeId: employee.employeeId,
-      date: record.date,
-      checkIn: record.checkIn === "Nghỉ" ? "" : record.checkIn,
-      checkOut: record.checkOut === "-" ? "" : record.checkOut,
-      isAbsent: record.checkIn === "Nghỉ",
-      overtimeHours: "",
+      ...record,
+      employeeName: employee?.name,
     });
     setDialogOpen(true);
   };
 
-  const handleSubmitAttendance = (data: any) => {
-    console.log("Attendance data:", data);
-    // Logic để cập nhật dữ liệu chấm công
+  const handleSubmitRecord = (data: any) => {
+    console.log("Attendance payroll data:", data);
+    toast.success("Đã cập nhật thông tin chấm công và lương!");
+    // Logic để cập nhật dữ liệu
   };
 
   const formatCurrency = (amount: number) => {
@@ -57,28 +46,28 @@ export default function AttendancePayroll() {
     }).format(amount);
   };
 
-  const calculateTotalAllowances = (allowances: any): number => {
-    return Object.values(allowances).reduce<number>((sum, val) => sum + (val as number), 0);
+  const handleImportExcel = () => {
+    toast.info("Chức năng nhập file Excel đang được phát triển...");
   };
 
-  const calculateTotalDeductions = (deductions: any): number => {
-    return Object.values(deductions).reduce<number>((sum, val) => sum + (val as number), 0);
+  const handleCalculateSalary = () => {
+    toast.success("Đã tính toán lương cho tất cả nhân viên!");
   };
 
-  const calculateNetSalary = (employee: any) => {
-    const totalAllowances = calculateTotalAllowances(employee.allowances);
-    const totalDeductions = calculateTotalDeductions(employee.deductions);
-    return (
-      employee.baseSalary +
-      totalAllowances +
-      employee.bonus +
-      employee.overtime -
-      totalDeductions
-    );
+  const handleExportPDF = () => {
+    toast.success("Đang xuất bảng lương ra file PDF...");
   };
 
-  const handleExportPDF = (type: string) => {
-    toast.success(`Đang xuất ${type} ra file PDF...`);
+  const handleExportExcel = () => {
+    toast.success("Đang xuất bảng lương ra file Excel...");
+  };
+
+  const handlePrint = () => {
+    toast.info("Đang chuẩn bị in bảng lương...");
+  };
+
+  const handleExportReport = () => {
+    toast.success("Đang xuất báo cáo quỹ lương tổng hợp...");
   };
 
   return (
@@ -90,7 +79,7 @@ export default function AttendancePayroll() {
         </p>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <Calendar className="h-4 w-4 text-muted-foreground" />
           <Select value={selectedMonth} onValueChange={setSelectedMonth}>
@@ -106,263 +95,173 @@ export default function AttendancePayroll() {
             </SelectContent>
           </Select>
         </div>
+
+        <div className="flex gap-2 flex-wrap">
+          <Button variant="outline" onClick={handleImportExcel}>
+            <FileSpreadsheet className="h-4 w-4 mr-2" />
+            Nhập file Excel
+          </Button>
+          <Button variant="outline" onClick={handleCalculateSalary}>
+            <Calculator className="h-4 w-4 mr-2" />
+            Tính lương
+          </Button>
+          <Button variant="outline" onClick={handleExportPDF}>
+            <Download className="h-4 w-4 mr-2" />
+            Xuất PDF
+          </Button>
+          <Button variant="outline" onClick={handleExportExcel}>
+            <FileSpreadsheet className="h-4 w-4 mr-2" />
+            Xuất Excel
+          </Button>
+          <Button variant="outline" onClick={handlePrint}>
+            <Printer className="h-4 w-4 mr-2" />
+            In bảng lương
+          </Button>
+          <Button variant="outline" onClick={handleExportReport}>
+            <FileText className="h-4 w-4 mr-2" />
+            Báo cáo tổng hợp
+          </Button>
+        </div>
       </div>
 
-      <Tabs defaultValue="attendance" className="w-full">
-        <TabsList className="grid w-full max-w-md grid-cols-2">
-          <TabsTrigger value="attendance">Bảng chấm công</TabsTrigger>
-          <TabsTrigger value="payroll">Bảng lương</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="attendance" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle>Bảng chấm công tháng {selectedMonth}</CardTitle>
-                  <CardDescription>
-                    Theo dõi giờ vào/ra và tổng hợp công của nhân viên
-                  </CardDescription>
-                </div>
-                <div className="flex gap-2">
-                  <Button onClick={handleAddAttendance}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Thêm chấm công
-                  </Button>
-                  <Button variant="outline" onClick={() => handleExportPDF("bảng chấm công")}>
-                    <Download className="h-4 w-4 mr-2" />
-                    Xuất PDF
-                  </Button>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                {mockAttendanceData.map((attendance) => {
-                  const employee = getEmployeeById(attendance.employeeId);
+      <Card>
+        <CardHeader>
+          <CardTitle>Bảng chấm công và lương tháng {selectedMonth}</CardTitle>
+          <CardDescription>
+            Nhập dữ liệu chấm công và tính lương cho từng nhân viên
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">Mã NV</TableHead>
+                  <TableHead>Họ tên</TableHead>
+                  <TableHead className="text-center">Ngày công</TableHead>
+                  <TableHead className="text-center">Ngày đi muộn</TableHead>
+                  <TableHead className="text-right">Lương cơ bản</TableHead>
+                  <TableHead className="text-right">Tiền thưởng</TableHead>
+                  <TableHead className="text-right">Trợ cấp</TableHead>
+                  <TableHead className="text-right">Thuế TNCN</TableHead>
+                  <TableHead className="text-right">BHXH</TableHead>
+                  <TableHead className="text-right">Tiền phạt</TableHead>
+                  <TableHead className="text-right">Tổng lương</TableHead>
+                  <TableHead className="w-[80px]">Thao tác</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {mockAttendancePayrollData.map((record) => {
+                  const employee = getEmployeeById(record.employeeId);
                   if (!employee) return null;
+                  const totalSalary = calculateTotalSalary(record);
+
                   return (
-                    <div key={attendance.id} className="space-y-3">
-                      <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-3">
-                            <h3 className="font-semibold text-foreground">
-                              {employee.name}
-                            </h3>
-                            <Badge variant="outline">{attendance.employeeId}</Badge>
-                            <Badge variant="secondary">{employee.department}</Badge>
-                          </div>
-                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                            <span>Công: {attendance.workingDays} ngày</span>
-                            <span>Đi muộn: {attendance.lateDays} lần</span>
-                            <span>Vắng: {attendance.absenceDays} ngày</span>
-                            <span>Tăng ca: {attendance.overtimeHours}h</span>
-                          </div>
-                      </div>
-                    </div>
-
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Ngày</TableHead>
-                          <TableHead>Giờ vào</TableHead>
-                          <TableHead>Giờ ra</TableHead>
-                          <TableHead>Trạng thái</TableHead>
-                          <TableHead className="w-[80px]">Thao tác</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {attendance.records.map((record, index) => (
-                          <TableRow key={index}>
-                            <TableCell className="font-medium">{record.date}</TableCell>
-                            <TableCell>{record.checkIn}</TableCell>
-                            <TableCell>{record.checkOut}</TableCell>
-                            <TableCell>
-                              {record.checkIn === "Nghỉ" ? (
-                                <Badge variant="secondary">Nghỉ</Badge>
-                              ) : record.checkIn > "08:15" ? (
-                                <Badge variant="destructive">Muộn</Badge>
-                              ) : (
-                                <Badge variant="default" className="bg-green-500 hover:bg-green-600">
-                                  Đúng giờ
-                                </Badge>
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleEditAttendance({ 
-                                  employeeId: attendance.employeeId,
-                                  employeeName: employee.name 
-                                }, record)}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="payroll" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle>Bảng lương tháng {selectedMonth}</CardTitle>
-                  <CardDescription>
-                    Chi tiết lương cơ bản, phụ cấp, khấu trừ và tổng thu nhập
-                  </CardDescription>
-                </div>
-                <Button onClick={() => handleExportPDF("bảng lương")}>
-                  <Download className="h-4 w-4 mr-2" />
-                  Xuất PDF
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Mã NV</TableHead>
-                    <TableHead>Họ tên</TableHead>
-                    <TableHead>Phòng ban</TableHead>
-                    <TableHead className="text-right">Lương cơ bản</TableHead>
-                    <TableHead className="text-right">Phụ cấp</TableHead>
-                    <TableHead className="text-right">Thưởng</TableHead>
-                    <TableHead className="text-right">Tăng ca</TableHead>
-                    <TableHead className="text-right">Khấu trừ</TableHead>
-                    <TableHead className="text-right">Thực lãnh</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {mockPayrollData.map((payroll) => {
-                    const employee = getEmployeeById(payroll.employeeId);
-                    if (!employee) return null;
-                    const totalAllowances = calculateTotalAllowances(payroll.allowances);
-                    const totalDeductions = calculateTotalDeductions(payroll.deductions);
-                    const netSalary = calculateNetSalary(payroll);
-
-                    return (
-                      <TableRow key={payroll.id}>
-                        <TableCell className="font-medium">{payroll.employeeId}</TableCell>
-                        <TableCell>{employee.name}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline">{employee.department}</Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          {formatCurrency(payroll.baseSalary)}
-                        </TableCell>
-                        <TableCell className="text-right text-green-600">
-                          +{formatCurrency(totalAllowances)}
-                        </TableCell>
-                        <TableCell className="text-right text-green-600">
-                          +{formatCurrency(payroll.bonus)}
-                        </TableCell>
-                        <TableCell className="text-right text-green-600">
-                          +{formatCurrency(payroll.overtime)}
-                        </TableCell>
-                        <TableCell className="text-right text-red-600">
-                          -{formatCurrency(totalDeductions)}
-                        </TableCell>
-                        <TableCell className="text-right font-semibold text-primary">
-                          {formatCurrency(netSalary)}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-
-              <div className="mt-6 space-y-4">
-                <h3 className="font-semibold text-foreground">Chi tiết phụ cấp và khấu trừ</h3>
-                {mockPayrollData.map((payroll) => {
-                  const employee = getEmployeeById(payroll.employeeId);
-                  if (!employee) return null;
-                  return (
-                    <Card key={payroll.id} className="border-muted">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-base">
-                          {employee.name} ({payroll.employeeId})
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="grid grid-cols-2 gap-6">
-                          <div>
-                            <h4 className="font-medium text-sm text-green-600 mb-2">
-                              Phụ cấp
-                            </h4>
-                            <div className="space-y-1 text-sm">
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">Chức vụ:</span>
-                                <span>{formatCurrency(payroll.allowances.position)}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">Đi lại:</span>
-                                <span>{formatCurrency(payroll.allowances.transport)}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">Ăn trưa:</span>
-                                <span>{formatCurrency(payroll.allowances.meal)}</span>
-                              </div>
-                              <div className="flex justify-between font-medium pt-1 border-t">
-                                <span>Tổng:</span>
-                                <span className="text-green-600">
-                                  {formatCurrency(calculateTotalAllowances(payroll.allowances))}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="font-medium text-sm text-red-600 mb-2">
-                              Khấu trừ
-                            </h4>
-                            <div className="space-y-1 text-sm">
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">Thuế TNCN:</span>
-                                <span>{formatCurrency(payroll.deductions.tax)}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">Bảo hiểm:</span>
-                                <span>{formatCurrency(payroll.deductions.insurance)}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-muted-foreground">Đi muộn:</span>
-                                <span>{formatCurrency(payroll.deductions.late)}</span>
-                              </div>
-                              <div className="flex justify-between font-medium pt-1 border-t">
-                                <span>Tổng:</span>
-                                <span className="text-red-600">
-                                  {formatCurrency(calculateTotalDeductions(payroll.deductions))}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
+                    <TableRow key={record.id}>
+                      <TableCell className="font-medium">{record.employeeId}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{employee.name}</span>
+                          <Badge variant="outline" className="text-xs">
+                            {employee.department}
+                          </Badge>
                         </div>
-                      </CardContent>
-                    </Card>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <Badge variant="secondary">{record.workingDays}</Badge>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {record.lateDays > 0 ? (
+                          <Badge variant="destructive">{record.lateDays}</Badge>
+                        ) : (
+                          <span className="text-muted-foreground">0</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {formatCurrency(record.baseSalary)}
+                      </TableCell>
+                      <TableCell className="text-right text-green-600">
+                        +{formatCurrency(record.bonus)}
+                      </TableCell>
+                      <TableCell className="text-right text-green-600">
+                        +{formatCurrency(record.allowances)}
+                      </TableCell>
+                      <TableCell className="text-right text-red-600">
+                        -{formatCurrency(record.tax)}
+                      </TableCell>
+                      <TableCell className="text-right text-red-600">
+                        -{formatCurrency(record.insurance)}
+                      </TableCell>
+                      <TableCell className="text-right text-red-600">
+                        {record.fine > 0 ? `-${formatCurrency(record.fine)}` : "-"}
+                      </TableCell>
+                      <TableCell className="text-right font-bold text-primary">
+                        {formatCurrency(totalSalary)}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEditRecord(record)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
                   );
                 })}
+              </TableBody>
+            </Table>
+          </div>
+
+          <div className="mt-6 p-4 bg-muted/50 rounded-lg">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Tổng nhân viên</p>
+                <p className="text-2xl font-bold text-foreground">
+                  {mockAttendancePayrollData.length}
+                </p>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+              <div>
+                <p className="text-sm text-muted-foreground">Tổng quỹ lương</p>
+                <p className="text-2xl font-bold text-primary">
+                  {formatCurrency(
+                    mockAttendancePayrollData.reduce(
+                      (sum, record) => sum + calculateTotalSalary(record),
+                      0
+                    )
+                  )}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Tổng thuế TNCN</p>
+                <p className="text-2xl font-bold text-red-600">
+                  {formatCurrency(
+                    mockAttendancePayrollData.reduce((sum, record) => sum + record.tax, 0)
+                  )}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Tổng BHXH</p>
+                <p className="text-2xl font-bold text-red-600">
+                  {formatCurrency(
+                    mockAttendancePayrollData.reduce(
+                      (sum, record) => sum + record.insurance,
+                      0
+                    )
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <AttendanceDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
-        onSubmit={handleSubmitAttendance}
+        onSubmit={handleSubmitRecord}
         defaultValues={editingRecord}
-        mode={dialogMode}
       />
     </div>
   );

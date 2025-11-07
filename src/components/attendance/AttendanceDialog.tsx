@@ -31,38 +31,49 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { mockEmployees } from "@/data/mockData";
 
-const attendanceSchema = z.object({
+const attendancePayrollSchema = z.object({
   employeeId: z.string().min(1, { message: "Vui lòng chọn nhân viên" }),
-  date: z.string().min(1, { message: "Vui lòng chọn ngày" }),
-  checkIn: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, {
-    message: "Giờ vào không hợp lệ (định dạng HH:mm)",
-  }).optional().or(z.literal("")),
-  checkOut: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, {
-    message: "Giờ ra không hợp lệ (định dạng HH:mm)",
-  }).optional().or(z.literal("")),
-  isAbsent: z.boolean().default(false),
-  overtimeHours: z.string().refine((val) => {
+  workingDays: z.string().refine((val) => {
+    const num = parseInt(val);
+    return !isNaN(num) && num >= 0 && num <= 31;
+  }, { message: "Số ngày công phải từ 0-31" }),
+  lateDays: z.string().refine((val) => {
+    const num = parseInt(val);
+    return !isNaN(num) && num >= 0;
+  }, { message: "Số ngày đi muộn phải >= 0" }),
+  baseSalary: z.string().refine((val) => {
     const num = parseFloat(val);
-    return !isNaN(num) && num >= 0 && num <= 12;
-  }, { message: "Giờ tăng ca phải từ 0-12 giờ" }).optional().or(z.literal("")),
-}).refine((data) => {
-  if (data.isAbsent) {
-    return true;
-  }
-  return data.checkIn && data.checkOut;
-}, {
-  message: "Vui lòng nhập giờ vào và giờ ra nếu không nghỉ",
-  path: ["checkIn"],
+    return !isNaN(num) && num >= 0;
+  }, { message: "Lương cơ bản phải >= 0" }),
+  bonus: z.string().refine((val) => {
+    const num = parseFloat(val);
+    return !isNaN(num) && num >= 0;
+  }, { message: "Tiền thưởng phải >= 0" }),
+  allowances: z.string().refine((val) => {
+    const num = parseFloat(val);
+    return !isNaN(num) && num >= 0;
+  }, { message: "Trợ cấp phải >= 0" }),
+  tax: z.string().refine((val) => {
+    const num = parseFloat(val);
+    return !isNaN(num) && num >= 0;
+  }, { message: "Thuế TNCN phải >= 0" }),
+  insurance: z.string().refine((val) => {
+    const num = parseFloat(val);
+    return !isNaN(num) && num >= 0;
+  }, { message: "BHXH phải >= 0" }),
+  fine: z.string().refine((val) => {
+    const num = parseFloat(val);
+    return !isNaN(num) && num >= 0;
+  }, { message: "Tiền phạt phải >= 0" }),
 });
 
-type AttendanceFormValues = z.infer<typeof attendanceSchema>;
+type AttendancePayrollFormValues = z.infer<typeof attendancePayrollSchema>;
 
 interface AttendanceDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: AttendanceFormValues) => void;
-  defaultValues?: Partial<AttendanceFormValues>;
-  mode: "create" | "edit";
+  onSubmit: (data: AttendancePayrollFormValues) => void;
+  defaultValues?: any;
 }
 
 export function AttendanceDialog({
@@ -70,45 +81,46 @@ export function AttendanceDialog({
   onOpenChange,
   onSubmit,
   defaultValues,
-  mode,
 }: AttendanceDialogProps) {
-  const [isAbsent, setIsAbsent] = useState(defaultValues?.isAbsent || false);
-
-  const form = useForm<AttendanceFormValues>({
-    resolver: zodResolver(attendanceSchema),
+  const form = useForm<AttendancePayrollFormValues>({
+    resolver: zodResolver(attendancePayrollSchema),
     defaultValues: {
       employeeId: defaultValues?.employeeId || "",
-      date: defaultValues?.date || "",
-      checkIn: defaultValues?.checkIn || "",
-      checkOut: defaultValues?.checkOut || "",
-      isAbsent: defaultValues?.isAbsent || false,
-      overtimeHours: defaultValues?.overtimeHours || "",
+      workingDays: defaultValues?.workingDays?.toString() || "",
+      lateDays: defaultValues?.lateDays?.toString() || "",
+      baseSalary: defaultValues?.baseSalary?.toString() || "",
+      bonus: defaultValues?.bonus?.toString() || "",
+      allowances: defaultValues?.allowances?.toString() || "",
+      tax: defaultValues?.tax?.toString() || "",
+      insurance: defaultValues?.insurance?.toString() || "",
+      fine: defaultValues?.fine?.toString() || "",
     },
   });
 
-  const handleSubmit = (data: AttendanceFormValues) => {
+  const handleSubmit = (data: AttendancePayrollFormValues) => {
     onSubmit(data);
     form.reset();
-    setIsAbsent(false);
     onOpenChange(false);
-    toast.success(
-      mode === "create"
-        ? "Thêm dữ liệu chấm công thành công!"
-        : "Cập nhật dữ liệu chấm công thành công!"
-    );
+  };
+
+  const calculateTotalSalary = () => {
+    const baseSalary = parseFloat(form.watch("baseSalary") || "0");
+    const bonus = parseFloat(form.watch("bonus") || "0");
+    const allowances = parseFloat(form.watch("allowances") || "0");
+    const tax = parseFloat(form.watch("tax") || "0");
+    const insurance = parseFloat(form.watch("insurance") || "0");
+    const fine = parseFloat(form.watch("fine") || "0");
+    
+    return baseSalary + bonus + allowances - tax - insurance - fine;
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
-            {mode === "create" ? "Thêm chấm công" : "Chỉnh sửa chấm công"}
-          </DialogTitle>
+          <DialogTitle>Chỉnh sửa chấm công & lương</DialogTitle>
           <DialogDescription>
-            {mode === "create"
-              ? "Nhập thông tin chấm công cho nhân viên"
-              : "Cập nhật thông tin chấm công"}
+            Cập nhật thông tin chấm công và lương cho nhân viên {defaultValues?.employeeName}
           </DialogDescription>
         </DialogHeader>
 
@@ -119,137 +131,195 @@ export function AttendanceDialog({
               name="employeeId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nhân viên *</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+                  <FormLabel>Mã nhân viên *</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled className="bg-muted" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="workingDays"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ngày công *</FormLabel>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Chọn nhân viên" />
-                      </SelectTrigger>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="31"
+                        placeholder="22"
+                        {...field}
+                      />
                     </FormControl>
-                    <SelectContent>
-                      {mockEmployees.map((emp) => (
-                        <SelectItem key={emp.employeeId} value={emp.employeeId}>
-                          {emp.employeeId} - {emp.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="date"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ngày *</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="lateDays"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ngày đi muộn *</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min="0"
+                        placeholder="0"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-            <FormField
-              control={form.control}
-              name="isAbsent"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={(checked) => {
-                        field.onChange(checked);
-                        setIsAbsent(checked as boolean);
-                        if (checked) {
-                          form.setValue("checkIn", "");
-                          form.setValue("checkOut", "");
-                          form.setValue("overtimeHours", "");
-                        }
-                      }}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>Nghỉ phép</FormLabel>
-                    <p className="text-sm text-muted-foreground">
-                      Đánh dấu nếu nhân viên nghỉ phép ngày này
-                    </p>
-                  </div>
-                </FormItem>
-              )}
-            />
+            <div className="space-y-3 p-4 bg-muted/50 rounded-lg">
+              <h4 className="font-semibold text-sm">Thông tin lương</h4>
+              
+              <FormField
+                control={form.control}
+                name="baseSalary"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Lương cơ bản (VNĐ) *</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min="0"
+                        placeholder="15000000"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {!isAbsent && (
-              <>
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="checkIn"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Giờ vào *</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="time"
-                            {...field}
-                            placeholder="08:00"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="checkOut"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Giờ ra *</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="time"
-                            {...field}
-                            placeholder="17:30"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
+              <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
-                  name="overtimeHours"
+                  name="bonus"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Giờ tăng ca (giờ)</FormLabel>
+                      <FormLabel>Tiền thưởng (VNĐ) *</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
-                          step="0.5"
                           min="0"
-                          max="12"
-                          placeholder="0"
+                          placeholder="1000000"
                           {...field}
                         />
                       </FormControl>
-                      <p className="text-sm text-muted-foreground">
-                        Nhập số giờ tăng ca (0-12 giờ)
-                      </p>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              </>
-            )}
+
+                <FormField
+                  control={form.control}
+                  name="allowances"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Trợ cấp (VNĐ) *</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min="0"
+                          placeholder="3000000"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-3 p-4 bg-red-50 dark:bg-red-950/20 rounded-lg">
+              <h4 className="font-semibold text-sm text-red-700 dark:text-red-400">
+                Khấu trừ
+              </h4>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="tax"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Thuế TNCN (VNĐ) *</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min="0"
+                          placeholder="1800000"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="insurance"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>BHXH (VNĐ) *</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          min="0"
+                          placeholder="1050000"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="fine"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tiền phạt (VNĐ) *</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min="0"
+                        placeholder="0"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="p-4 bg-primary/10 rounded-lg">
+              <div className="flex items-center justify-between">
+                <span className="font-semibold">Tổng lương thực lãnh:</span>
+                <span className="text-2xl font-bold text-primary">
+                  {new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(calculateTotalSalary())}
+                </span>
+              </div>
+            </div>
 
             <DialogFooter>
               <Button
@@ -257,15 +327,12 @@ export function AttendanceDialog({
                 variant="outline"
                 onClick={() => {
                   form.reset();
-                  setIsAbsent(false);
                   onOpenChange(false);
                 }}
               >
                 Hủy
               </Button>
-              <Button type="submit">
-                {mode === "create" ? "Thêm" : "Cập nhật"}
-              </Button>
+              <Button type="submit">Cập nhật</Button>
             </DialogFooter>
           </form>
         </Form>

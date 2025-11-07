@@ -173,137 +173,104 @@ export const mockContracts: Contract[] = [
   },
 ];
 
-export interface AttendanceRecord {
+// Combined Attendance and Payroll Record
+export interface AttendancePayrollRecord {
   id: string;
   employeeId: string;
   workingDays: number;
   lateDays: number;
-  absenceDays: number;
-  overtimeHours: number;
-  records: {
-    date: string;
-    checkIn: string;
-    checkOut: string;
-  }[];
+  baseSalary: number;
+  bonus: number;
+  allowances: number;
+  tax: number;
+  insurance: number;
+  fine: number;
 }
 
-export const mockAttendanceData: AttendanceRecord[] = [
+export const mockAttendancePayrollData: AttendancePayrollRecord[] = [
   {
     id: "1",
     employeeId: "NV001",
     workingDays: 22,
     lateDays: 1,
-    absenceDays: 0,
-    overtimeHours: 8,
-    records: [
-      { date: "01/06", checkIn: "08:00", checkOut: "17:30" },
-      { date: "02/06", checkIn: "08:15", checkOut: "17:45" },
-      { date: "03/06", checkIn: "08:05", checkOut: "17:30" },
-      { date: "04/06", checkIn: "08:00", checkOut: "17:30" },
-      { date: "05/06", checkIn: "08:10", checkOut: "17:30" },
-    ],
+    baseSalary: 15000000,
+    bonus: 1000000,
+    allowances: 3500000,
+    tax: 1800000,
+    insurance: 1050000,
+    fine: 50000,
   },
   {
     id: "2",
     employeeId: "NV002",
     workingDays: 21,
     lateDays: 0,
-    absenceDays: 1,
-    overtimeHours: 4,
-    records: [
-      { date: "01/06", checkIn: "08:00", checkOut: "17:30" },
-      { date: "02/06", checkIn: "08:00", checkOut: "17:30" },
-      { date: "03/06", checkIn: "Nghỉ", checkOut: "-" },
-      { date: "04/06", checkIn: "08:00", checkOut: "17:30" },
-      { date: "05/06", checkIn: "08:00", checkOut: "17:30" },
-    ],
+    baseSalary: 12000000,
+    bonus: 2000000,
+    allowances: 3000000,
+    tax: 1350000,
+    insurance: 840000,
+    fine: 0,
   },
   {
     id: "3",
+    employeeId: "NV003",
+    workingDays: 22,
+    lateDays: 0,
+    baseSalary: 18000000,
+    bonus: 1500000,
+    allowances: 2500000,
+    tax: 2160000,
+    insurance: 1260000,
+    fine: 0,
+  },
+  {
+    id: "4",
+    employeeId: "NV004",
+    workingDays: 20,
+    lateDays: 2,
+    baseSalary: 25000000,
+    bonus: 3000000,
+    allowances: 4000000,
+    tax: 3500000,
+    insurance: 1750000,
+    fine: 100000,
+  },
+  {
+    id: "5",
+    employeeId: "NV005",
+    workingDays: 18,
+    lateDays: 1,
+    baseSalary: 14000000,
+    bonus: 500000,
+    allowances: 2000000,
+    tax: 1260000,
+    insurance: 980000,
+    fine: 50000,
+  },
+  {
+    id: "6",
+    employeeId: "NV006",
+    workingDays: 22,
+    lateDays: 0,
+    baseSalary: 30000000,
+    bonus: 5000000,
+    allowances: 5000000,
+    tax: 4800000,
+    insurance: 2100000,
+    fine: 0,
+  },
+  {
+    id: "7",
     employeeId: "NV007",
     workingDays: 22,
     lateDays: 2,
-    absenceDays: 0,
-    overtimeHours: 12,
-    records: [
-      { date: "01/06", checkIn: "08:00", checkOut: "17:30" },
-      { date: "02/06", checkIn: "08:20", checkOut: "17:30" },
-      { date: "03/06", checkIn: "08:00", checkOut: "17:30" },
-      { date: "04/06", checkIn: "08:25", checkOut: "17:30" },
-      { date: "05/06", checkIn: "08:00", checkOut: "19:00" },
-    ],
-  },
-];
-
-export interface PayrollRecord {
-  id: string;
-  employeeId: string;
-  baseSalary: number;
-  allowances: {
-    position: number;
-    transport: number;
-    meal: number;
-  };
-  deductions: {
-    tax: number;
-    insurance: number;
-    late: number;
-  };
-  bonus: number;
-  overtime: number;
-}
-
-export const mockPayrollData: PayrollRecord[] = [
-  {
-    id: "1",
-    employeeId: "NV001",
-    baseSalary: 15000000,
-    allowances: {
-      position: 2000000,
-      transport: 500000,
-      meal: 1000000,
-    },
-    deductions: {
-      tax: 1800000,
-      insurance: 1050000,
-      late: 50000,
-    },
-    bonus: 1000000,
-    overtime: 800000,
-  },
-  {
-    id: "2",
-    employeeId: "NV002",
-    baseSalary: 12000000,
-    allowances: {
-      position: 1500000,
-      transport: 500000,
-      meal: 1000000,
-    },
-    deductions: {
-      tax: 1350000,
-      insurance: 840000,
-      late: 0,
-    },
-    bonus: 2000000,
-    overtime: 400000,
-  },
-  {
-    id: "3",
-    employeeId: "NV007",
     baseSalary: 13000000,
-    allowances: {
-      position: 1800000,
-      transport: 500000,
-      meal: 1000000,
-    },
-    deductions: {
-      tax: 1560000,
-      insurance: 910000,
-      late: 100000,
-    },
     bonus: 1500000,
-    overtime: 1200000,
+    allowances: 3300000,
+    tax: 1560000,
+    insurance: 910000,
+    fine: 100000,
   },
 ];
 
@@ -317,12 +284,12 @@ export const getContractByEmployeeId = (employeeId: string): Contract | undefine
   return mockContracts.find(contract => contract.employeeId === employeeId);
 };
 
-// Helper function to get attendance by employee ID
-export const getAttendanceByEmployeeId = (employeeId: string): AttendanceRecord | undefined => {
-  return mockAttendanceData.find(att => att.employeeId === employeeId);
+// Helper function to get attendance payroll by employee ID
+export const getAttendancePayrollByEmployeeId = (employeeId: string): AttendancePayrollRecord | undefined => {
+  return mockAttendancePayrollData.find(record => record.employeeId === employeeId);
 };
 
-// Helper function to get payroll by employee ID
-export const getPayrollByEmployeeId = (employeeId: string): PayrollRecord | undefined => {
-  return mockPayrollData.find(payroll => payroll.employeeId === employeeId);
+// Helper function to calculate total salary
+export const calculateTotalSalary = (record: AttendancePayrollRecord): number => {
+  return record.baseSalary + record.bonus + record.allowances - record.tax - record.insurance - record.fine;
 };
