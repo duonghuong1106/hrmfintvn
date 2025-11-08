@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { UserPlus, Search, Eye } from "lucide-react";
+import { UserPlus, Search, Pencil, Trash2 } from "lucide-react";
 import { mockEmployees, DEPARTMENTS, POSITIONS, type Employee } from "@/data/mockData";
 
 export default function Employees() {
@@ -42,6 +42,16 @@ export default function Employees() {
       case 'terminated': return 'destructive';
       default: return 'outline';
     }
+  };
+
+  const handleEdit = (employee: Employee) => {
+    // TODO: Implement edit functionality
+    console.log('Edit employee:', employee);
+  };
+
+  const handleDelete = (employeeId: string) => {
+    // TODO: Implement delete functionality
+    console.log('Delete employee:', employeeId);
   };
 
   return (
@@ -129,9 +139,14 @@ export default function Employees() {
                     </div>
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button variant="ghost" size="icon">
-                      <Eye className="h-4 w-4" />
-                    </Button>
+                    <div className="flex items-center justify-end gap-2">
+                      <Button variant="ghost" size="icon" onClick={() => handleEdit(employee)}>
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" onClick={() => handleDelete(employee.id)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

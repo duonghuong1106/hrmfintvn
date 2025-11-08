@@ -16,17 +16,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { FileText, Search, Eye, Download, Plus } from "lucide-react";
-import { toast } from "sonner";
+import { FileText, Search, Pencil, Trash2, Plus } from "lucide-react";
 import { mockContracts, getEmployeeById, type Contract } from "@/data/mockData";
 
 const contractTypeLabels = {
@@ -54,8 +46,6 @@ export default function Contracts() {
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [selectedContract, setSelectedContract] = useState<Contract | null>(null);
-  const [showDetailDialog, setShowDetailDialog] = useState(false);
 
   const filteredContracts = mockContracts.filter((contract) => {
     const employee = getEmployeeById(contract.employeeId);
@@ -69,20 +59,14 @@ export default function Contracts() {
     return matchesSearch && matchesType && matchesStatus;
   });
 
-  const handleViewDetails = (contract: Contract) => {
-    setSelectedContract(contract);
-    setShowDetailDialog(true);
+  const handleEdit = (contract: Contract) => {
+    // TODO: Implement edit functionality
+    console.log('Edit contract:', contract);
   };
 
-  const handleDownloadContract = (contract: Contract) => {
-    toast.success(`Đang tải hợp đồng ${contract.id}`);
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(amount);
+  const handleDelete = (contractId: string) => {
+    // TODO: Implement delete functionality
+    console.log('Delete contract:', contractId);
   };
 
   return (
@@ -187,16 +171,16 @@ export default function Contracts() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => handleViewDetails(contract)}
+                          onClick={() => handleEdit(contract)}
                         >
-                          <Eye className="h-4 w-4" />
+                          <Pencil className="h-4 w-4" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => handleDownloadContract(contract)}
+                          onClick={() => handleDelete(contract.id)}
                         >
-                          <Download className="h-4 w-4" />
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </TableCell>
@@ -208,122 +192,6 @@ export default function Contracts() {
           </Table>
         </div>
       </Card>
-
-      <Dialog open={showDetailDialog} onOpenChange={setShowDetailDialog}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Chi tiết hợp đồng</DialogTitle>
-            <DialogDescription>
-              Thông tin chi tiết và bản xem trước hợp đồng
-            </DialogDescription>
-          </DialogHeader>
-
-          {selectedContract && (() => {
-            const employee = getEmployeeById(selectedContract.employeeId);
-            return (
-              <div className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">Mã hợp đồng</div>
-                    <div className="font-medium">{selectedContract.id}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">Trạng thái</div>
-                    <Badge
-                      variant="secondary"
-                      className={statusColors[selectedContract.status]}
-                    >
-                      {statusLabels[selectedContract.status]}
-                    </Badge>
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">Tên nhân viên</div>
-                    <div className="font-medium">{employee?.name || "N/A"}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">Mã nhân viên</div>
-                    <div className="font-medium">{selectedContract.employeeId}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">Chức vụ</div>
-                    <div className="font-medium">{employee?.position || "N/A"}</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">Phòng ban</div>
-                    <div className="font-medium">{employee?.department || "N/A"}</div>
-                  </div>
-                <div>
-                  <div className="text-sm text-muted-foreground mb-1">Loại hợp đồng</div>
-                  <div className="font-medium">
-                    {contractTypeLabels[selectedContract.type]}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-sm text-muted-foreground mb-1">Thời hạn</div>
-                  <div className="font-medium">
-                    {selectedContract.startDate} - {selectedContract.endDate}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-sm text-muted-foreground mb-1">Lương cơ bản</div>
-                  <div className="font-medium text-primary">
-                    {formatCurrency(selectedContract.baseSalary)}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-sm text-muted-foreground mb-1">Phụ cấp</div>
-                  <div className="font-medium text-primary">
-                    {formatCurrency(selectedContract.allowances)}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-sm text-muted-foreground mb-1">Tổng thu nhập</div>
-                  <div className="font-bold text-primary text-lg">
-                    {formatCurrency(
-                      selectedContract.baseSalary + selectedContract.allowances
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="text-sm font-medium">Bản xem trước hợp đồng</div>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="gap-2"
-                    onClick={() => handleDownloadContract(selectedContract)}
-                  >
-                    <Download className="h-4 w-4" />
-                    Tải xuống
-                  </Button>
-                </div>
-                <Card className="p-8 bg-muted/30 border-2 border-dashed">
-                  <div className="flex flex-col items-center justify-center gap-4 text-center">
-                    <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-                      <FileText className="h-8 w-8 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-lg mb-2">
-                        Hợp đồng lao động - {selectedContract.id}
-                      </h3>
-                      <p className="text-muted-foreground mb-4">
-                        Để xem đầy đủ nội dung hợp đồng, vui lòng tải xuống file PDF
-                      </p>
-                      <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-                        <FileText className="h-4 w-4" />
-                        <span>contract_{selectedContract.id}.pdf</span>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              </div>
-            </div>
-            );
-          })()}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
