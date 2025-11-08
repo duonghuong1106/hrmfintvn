@@ -29,7 +29,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { mockEmployees } from "@/data/mockData";
+import { mockEmployees, getEmployeeById } from "@/data/mockData";
 
 const attendancePayrollSchema = z.object({
   employeeId: z.string().min(1, { message: "Vui lòng chọn nhân viên" }),
@@ -114,13 +114,19 @@ export function AttendanceDialog({
     return baseSalary + bonus + allowances - tax - insurance - fine;
   };
 
+  const isEditing = !!defaultValues;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Chỉnh sửa chấm công & lương</DialogTitle>
+          <DialogTitle>
+            {isEditing ? 'Chỉnh sửa chấm công & lương' : 'Thêm Bảng chấm công và lương'}
+          </DialogTitle>
           <DialogDescription>
-            Cập nhật thông tin chấm công và lương cho nhân viên {defaultValues?.employeeName}
+            {isEditing 
+              ? `Cập nhật thông tin chấm công và lương cho nhân viên ${defaultValues?.employeeName}`
+              : 'Thêm thông tin chấm công và lương cho nhân viên'}
           </DialogDescription>
         </DialogHeader>
 
@@ -131,10 +137,27 @@ export function AttendanceDialog({
               name="employeeId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Mã nhân viên *</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled className="bg-muted" />
-                  </FormControl>
+                  <FormLabel>Nhân viên *</FormLabel>
+                  {isEditing ? (
+                    <FormControl>
+                      <Input {...field} disabled className="bg-muted" />
+                    </FormControl>
+                  ) : (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Chọn nhân viên" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {mockEmployees.map((employee) => (
+                          <SelectItem key={employee.employeeId} value={employee.employeeId}>
+                            {employee.employeeId} - {employee.name} ({employee.department})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
@@ -332,7 +355,7 @@ export function AttendanceDialog({
               >
                 Hủy
               </Button>
-              <Button type="submit">Cập nhật</Button>
+              <Button type="submit">{isEditing ? 'Cập nhật' : 'Thêm'}</Button>
             </DialogFooter>
           </form>
         </Form>

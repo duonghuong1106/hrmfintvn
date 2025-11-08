@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { UserPlus, Search, Eye } from "lucide-react";
-import { mockEmployees, type Employee } from "@/data/mockData";
+import { mockEmployees, DEPARTMENTS, POSITIONS, type Employee } from "@/data/mockData";
 
 export default function Employees() {
   const [employees] = useState<Employee[]>(mockEmployees);
@@ -75,11 +75,11 @@ export default function Employees() {
               </SelectTrigger>
               <SelectContent className="bg-popover">
                 <SelectItem value="all">Tất cả phòng ban</SelectItem>
-                <SelectItem value="Kỹ thuật">Kỹ thuật</SelectItem>
-                <SelectItem value="Kinh doanh">Kinh doanh</SelectItem>
-                <SelectItem value="Marketing">Marketing</SelectItem>
-                <SelectItem value="Tài chính">Tài chính</SelectItem>
-                <SelectItem value="Nhân sự">Nhân sự</SelectItem>
+                {DEPARTMENTS.map((dept) => (
+                  <SelectItem key={dept} value={dept}>
+                    {dept}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>

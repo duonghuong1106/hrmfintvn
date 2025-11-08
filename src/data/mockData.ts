@@ -1,12 +1,38 @@
 // Centralized mock data for all modules
 
+// Standard departments across the system
+export const DEPARTMENTS = [
+  'Phòng kinh doanh',
+  'Phòng giải pháp',
+  'Trung tâm sản xuất phần mềm',
+  'Phòng Tài chính - kế toán',
+  'Phòng Hành chính nhân sự'
+] as const;
+
+// Standard positions across the system
+export const POSITIONS = [
+  'Business',
+  'Analyst',
+  'Tester',
+  'Developer',
+  'Hành chính',
+  'Kế toán'
+] as const;
+
+// User roles for account management
+export const USER_ROLES = [
+  'Nhân viên nhân sự',
+  'Nhân viên kế toán',
+  'Ban giám đốc'
+] as const;
+
 export interface Employee {
   id: string;
   employeeId: string;
   name: string;
   gender: string;
-  department: string;
-  position: string;
+  department: typeof DEPARTMENTS[number];
+  position: typeof POSITIONS[number];
   status: 'active' | 'on-leave' | 'terminated';
   email: string;
   phone: string;
@@ -18,8 +44,8 @@ export const mockEmployees: Employee[] = [
     employeeId: 'NV001',
     name: 'Nguyễn Văn An',
     gender: 'Nam',
-    department: 'Kỹ thuật',
-    position: 'Kỹ sư phần mềm Senior',
+    department: 'Trung tâm sản xuất phần mềm',
+    position: 'Developer',
     status: 'active',
     email: 'nguyen.van.an@company.com',
     phone: '0912-345-678',
@@ -29,8 +55,8 @@ export const mockEmployees: Employee[] = [
     employeeId: 'NV002',
     name: 'Trần Thị Bình',
     gender: 'Nữ',
-    department: 'Kinh doanh',
-    position: 'Nhân viên kinh doanh',
+    department: 'Phòng kinh doanh',
+    position: 'Business',
     status: 'active',
     email: 'tran.thi.binh@company.com',
     phone: '0912-345-679',
@@ -40,8 +66,8 @@ export const mockEmployees: Employee[] = [
     employeeId: 'NV003',
     name: 'Phạm Minh Châu',
     gender: 'Nữ',
-    department: 'Kỹ thuật',
-    position: 'Kỹ sư phần mềm',
+    department: 'Phòng giải pháp',
+    position: 'Analyst',
     status: 'active',
     email: 'pham.minh.chau@company.com',
     phone: '0912-345-680',
@@ -51,8 +77,8 @@ export const mockEmployees: Employee[] = [
     employeeId: 'NV004',
     name: 'Lê Hoàng Dũng',
     gender: 'Nam',
-    department: 'Kinh doanh',
-    position: 'Trưởng phòng kinh doanh',
+    department: 'Trung tâm sản xuất phần mềm',
+    position: 'Tester',
     status: 'active',
     email: 'le.hoang.dung@company.com',
     phone: '0912-345-681',
@@ -62,8 +88,8 @@ export const mockEmployees: Employee[] = [
     employeeId: 'NV005',
     name: 'Võ Thị Em',
     gender: 'Nữ',
-    department: 'Nhân sự',
-    position: 'Chuyên viên nhân sự',
+    department: 'Phòng Hành chính nhân sự',
+    position: 'Hành chính',
     status: 'on-leave',
     email: 'vo.thi.em@company.com',
     phone: '0912-345-682',
@@ -73,8 +99,8 @@ export const mockEmployees: Employee[] = [
     employeeId: 'NV006',
     name: 'Hoàng Văn Phong',
     gender: 'Nam',
-    department: 'Tài chính',
-    position: 'Cố vấn tài chính',
+    department: 'Phòng Tài chính - kế toán',
+    position: 'Kế toán',
     status: 'active',
     email: 'hoang.van.phong@company.com',
     phone: '0912-345-683',
@@ -84,8 +110,8 @@ export const mockEmployees: Employee[] = [
     employeeId: 'NV007',
     name: 'Lê Văn Cường',
     gender: 'Nam',
-    department: 'Marketing',
-    position: 'Chuyên viên Marketing',
+    department: 'Phòng kinh doanh',
+    position: 'Business',
     status: 'active',
     email: 'le.van.cuong@company.com',
     phone: '0912-345-684',

@@ -4,10 +4,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, Calendar, FileSpreadsheet, Calculator, Printer, FileText, Edit } from "lucide-react";
+import { Download, Calendar, FileSpreadsheet, Calculator, Printer, FileText, Edit, Trash2, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { AttendanceDialog } from "@/components/attendance/AttendanceDialog";
-import { mockAttendancePayrollData, getEmployeeById, calculateTotalSalary } from "@/data/mockData";
+import { mockAttendancePayrollData as initialData, getEmployeeById, calculateTotalSalary } from "@/data/mockData";
 
 // Mock data
 const months = [
@@ -23,6 +23,7 @@ export default function AttendancePayroll() {
   const [selectedMonth, setSelectedMonth] = useState("2024-06");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<any>(null);
+  const [attendanceData, setAttendanceData] = useState(initialData);
 
   const handleEditRecord = (record: any) => {
     const employee = getEmployeeById(record.employeeId);
@@ -34,9 +35,38 @@ export default function AttendancePayroll() {
   };
 
   const handleSubmitRecord = (data: any) => {
-    console.log("Attendance payroll data:", data);
-    toast.success("Đã cập nhật thông tin chấm công và lương!");
-    // Logic để cập nhật dữ liệu
+    if (editingRecord) {
+      setAttendanceData(attendanceData.map(record => 
+        record.id === editingRecord.id ? { ...record, ...data } : record
+      ));
+      toast.success("Đã cập nhật thông tin chấm công và lương!");
+    } else {
+      const newRecord = {
+        id: String(attendanceData.length + 1),
+        employeeId: data.employeeId,
+        workingDays: data.workingDays,
+        lateDays: data.lateDays,
+        baseSalary: data.baseSalary,
+        bonus: data.bonus,
+        allowances: data.allowances,
+        tax: data.tax,
+        insurance: data.insurance,
+        fine: data.fine,
+      };
+      setAttendanceData([...attendanceData, newRecord]);
+      toast.success("Đã thêm bảng chấm công và lương!");
+    }
+    setEditingRecord(null);
+  };
+
+  const handleAddNew = () => {
+    setEditingRecord(null);
+    setDialogOpen(true);
+  };
+
+  const handleDeleteRecord = (id: string) => {
+    setAttendanceData(attendanceData.filter(record => record.id !== id));
+    toast.success("Đã xóa bảng chấm công và lương!");
   };
 
   const formatCurrency = (amount: number) => {
@@ -46,9 +76,6 @@ export default function AttendancePayroll() {
     }).format(amount);
   };
 
-  const handleImportExcel = () => {
-    toast.info("Chức năng nhập file Excel đang được phát triển...");
-  };
 
   const handleCalculateSalary = () => {
     toast.success("Đã tính toán lương cho tất cả nhân viên!");
@@ -97,9 +124,9 @@ export default function AttendancePayroll() {
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          <Button variant="outline" onClick={handleImportExcel}>
-            <FileSpreadsheet className="h-4 w-4 mr-2" />
-            Nhập file Excel
+          <Button variant="outline" onClick={handleAddNew}>
+            <Plus className="h-4 w-4 mr-2" />
+            Thêm Bảng chấm công và lương
           </Button>
           <Button variant="outline" onClick={handleCalculateSalary}>
             <Calculator className="h-4 w-4 mr-2" />
@@ -138,6 +165,7 @@ export default function AttendancePayroll() {
                 <TableRow>
                   <TableHead className="w-[100px]">Mã NV</TableHead>
                   <TableHead>Họ tên</TableHead>
+                  <TableHead>Chức vụ</TableHead>
                   <TableHead className="text-center">Ngày công</TableHead>
                   <TableHead className="text-center">Ngày đi muộn</TableHead>
                   <TableHead className="text-right">Lương cơ bản</TableHead>
@@ -147,11 +175,11 @@ export default function AttendancePayroll() {
                   <TableHead className="text-right">BHXH</TableHead>
                   <TableHead className="text-right">Tiền phạt</TableHead>
                   <TableHead className="text-right">Tổng lương</TableHead>
-                  <TableHead className="w-[80px]">Thao tác</TableHead>
+                  <TableHead className="w-[120px]">Thao tác</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {mockAttendancePayrollData.map((record) => {
+                {attendanceData.map((record) => {
                   const employee = getEmployeeById(record.employeeId);
                   if (!employee) return null;
                   const totalSalary = calculateTotalSalary(record);
@@ -166,6 +194,9 @@ export default function AttendancePayroll() {
                             {employee.department}
                           </Badge>
                         </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">{employee.position}</Badge>
                       </TableCell>
                       <TableCell className="text-center">
                         <Badge variant="secondary">{record.workingDays}</Badge>
@@ -199,13 +230,22 @@ export default function AttendancePayroll() {
                         {formatCurrency(totalSalary)}
                       </TableCell>
                       <TableCell>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleEditRecord(record)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
+                        <div className="flex gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEditRecord(record)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteRecord(record.id)}
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   );
@@ -219,14 +259,14 @@ export default function AttendancePayroll() {
               <div>
                 <p className="text-sm text-muted-foreground">Tổng nhân viên</p>
                 <p className="text-2xl font-bold text-foreground">
-                  {mockAttendancePayrollData.length}
+                  {attendanceData.length}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Tổng quỹ lương</p>
                 <p className="text-2xl font-bold text-primary">
                   {formatCurrency(
-                    mockAttendancePayrollData.reduce(
+                    attendanceData.reduce(
                       (sum, record) => sum + calculateTotalSalary(record),
                       0
                     )
@@ -237,7 +277,7 @@ export default function AttendancePayroll() {
                 <p className="text-sm text-muted-foreground">Tổng thuế TNCN</p>
                 <p className="text-2xl font-bold text-red-600">
                   {formatCurrency(
-                    mockAttendancePayrollData.reduce((sum, record) => sum + record.tax, 0)
+                    attendanceData.reduce((sum, record) => sum + record.tax, 0)
                   )}
                 </p>
               </div>
@@ -245,7 +285,7 @@ export default function AttendancePayroll() {
                 <p className="text-sm text-muted-foreground">Tổng BHXH</p>
                 <p className="text-2xl font-bold text-red-600">
                   {formatCurrency(
-                    mockAttendancePayrollData.reduce(
+                    attendanceData.reduce(
                       (sum, record) => sum + record.insurance,
                       0
                     )

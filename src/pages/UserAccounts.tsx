@@ -31,57 +31,49 @@ import {
 import { UserPlus, Search, Edit, Trash2, Lock, Unlock } from "lucide-react";
 import { toast } from "sonner";
 
+import { DEPARTMENTS, USER_ROLES } from "@/data/mockData";
+
 interface UserAccount {
   id: string;
   username: string;
   fullName: string;
   email: string;
-  role: string;
+  role: typeof USER_ROLES[number];
   status: 'active' | 'inactive';
   createdDate: string;
-  department: string;
+  department: typeof DEPARTMENTS[number];
 }
 
 const mockAccounts: UserAccount[] = [
   {
     id: '1',
-    username: 'jdoe',
-    fullName: 'John Doe',
-    email: 'john.doe@company.com',
-    role: 'Admin',
+    username: 'admin',
+    fullName: 'Nguyễn Văn Đạt',
+    email: 'nguyen.van.dat@company.com',
+    role: 'Ban giám đốc',
     status: 'active',
     createdDate: '2024-01-15',
-    department: 'Engineering',
+    department: 'Phòng Hành chính nhân sự',
   },
   {
     id: '2',
-    username: 'sjohnson',
-    fullName: 'Sarah Johnson',
-    email: 'sarah.johnson@company.com',
-    role: 'HR Manager',
+    username: 'hr_staff',
+    fullName: 'Trần Thị Hương',
+    email: 'tran.thi.huong@company.com',
+    role: 'Nhân viên nhân sự',
     status: 'active',
     createdDate: '2024-02-20',
-    department: 'Human Resources',
+    department: 'Phòng Hành chính nhân sự',
   },
   {
     id: '3',
-    username: 'mchen',
-    fullName: 'Michael Chen',
-    email: 'michael.chen@company.com',
-    role: 'Department Manager',
+    username: 'accountant',
+    fullName: 'Lê Văn Minh',
+    email: 'le.van.minh@company.com',
+    role: 'Nhân viên kế toán',
     status: 'active',
     createdDate: '2024-03-10',
-    department: 'Sales',
-  },
-  {
-    id: '4',
-    username: 'edavis',
-    fullName: 'Emily Davis',
-    email: 'emily.davis@company.com',
-    role: 'Employee',
-    status: 'inactive',
-    createdDate: '2024-04-05',
-    department: 'Finance',
+    department: 'Phòng Tài chính - kế toán',
   },
 ];
 
@@ -155,10 +147,11 @@ export default function UserAccounts() {
                     <SelectValue placeholder="Chọn vai trò" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
-                    <SelectItem value="admin">Quản trị viên</SelectItem>
-                    <SelectItem value="hr">Quản lý nhân sự</SelectItem>
-                    <SelectItem value="manager">Trưởng phòng</SelectItem>
-                    <SelectItem value="employee">Nhân viên</SelectItem>
+                    {USER_ROLES.map((role) => (
+                      <SelectItem key={role} value={role}>
+                        {role}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -169,11 +162,11 @@ export default function UserAccounts() {
                     <SelectValue placeholder="Chọn phòng ban" />
                   </SelectTrigger>
                   <SelectContent className="bg-popover">
-                    <SelectItem value="engineering">Kỹ thuật</SelectItem>
-                    <SelectItem value="hr">Nhân sự</SelectItem>
-                    <SelectItem value="sales">Kinh doanh</SelectItem>
-                    <SelectItem value="finance">Tài chính</SelectItem>
-                    <SelectItem value="marketing">Marketing</SelectItem>
+                    {DEPARTMENTS.map((dept) => (
+                      <SelectItem key={dept} value={dept}>
+                        {dept}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
