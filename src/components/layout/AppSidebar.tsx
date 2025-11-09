@@ -24,7 +24,7 @@ const menuItems = [
   { title: "Tổng quan", url: "/", icon: LayoutDashboard },
   { title: "Tài khoản người dùng", url: "/accounts", icon: Users },
   { title: "Hồ sơ nhân viên", url: "/employees", icon: UserCircle },
-  { title: "Quản lý hợp đồng", url: "/contracts", icon: FileText },
+  { title: "Hợp đồng lao động", url: "/contracts", icon: FileText },
   { title: "Chấm công & Lương", url: "/attendance", icon: Clock },
   { title: "Phòng ban", url: "/departments", icon: Building2 },
   { title: "Báo cáo & Thống kê", url: "/reports", icon: BarChart3 },

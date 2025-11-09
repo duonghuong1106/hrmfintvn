@@ -18,8 +18,10 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { FileText, Search, Pencil, Trash2, Plus } from "lucide-react";
+import { FileText, Search, Edit, Trash2, Plus } from "lucide-react";
 import { mockContracts, getEmployeeById, type Contract } from "@/data/mockData";
+import { ContractDialog } from "@/components/contracts/ContractDialog";
+import { toast } from "sonner";
 
 const contractTypeLabels = {
   probation: "Thử việc",
@@ -46,6 +48,8 @@ export default function Contracts() {
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingContract, setEditingContract] = useState<Contract | null>(null);
 
   const filteredContracts = mockContracts.filter((contract) => {
     const employee = getEmployeeById(contract.employeeId);
@@ -60,13 +64,26 @@ export default function Contracts() {
   });
 
   const handleEdit = (contract: Contract) => {
-    // TODO: Implement edit functionality
-    console.log('Edit contract:', contract);
+    setEditingContract(contract);
+    setDialogOpen(true);
   };
 
   const handleDelete = (contractId: string) => {
     // TODO: Implement delete functionality
-    console.log('Delete contract:', contractId);
+    toast.success("Đã xóa hợp đồng thành công");
+  };
+
+  const handleAddNew = () => {
+    setEditingContract(null);
+    setDialogOpen(true);
+  };
+
+  const handleSubmit = (data: any) => {
+    if (editingContract) {
+      toast.success("Đã cập nhật hợp đồng!");
+    } else {
+      toast.success("Đã thêm hợp đồng mới!");
+    }
   };
 
   return (
@@ -78,7 +95,7 @@ export default function Contracts() {
             Quản lý hợp đồng lao động của nhân viên
           </p>
         </div>
-        <Button className="gap-2">
+        <Button className="gap-2" onClick={handleAddNew}>
           <Plus className="h-4 w-4" />
           Thêm hợp đồng
         </Button>
@@ -173,7 +190,7 @@ export default function Contracts() {
                           size="icon"
                           onClick={() => handleEdit(contract)}
                         >
-                          <Pencil className="h-4 w-4" />
+                          <Edit className="h-4 w-4" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -192,6 +209,13 @@ export default function Contracts() {
           </Table>
         </div>
       </Card>
+      
+      <ContractDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onSubmit={handleSubmit}
+        defaultValues={editingContract}
+      />
     </div>
   );
 }

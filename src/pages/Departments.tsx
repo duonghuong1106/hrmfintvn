@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +11,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Building2, Users, Edit, Trash2, Plus } from "lucide-react";
+import { DepartmentDialog } from "@/components/departments/DepartmentDialog";
+import { toast } from "sonner";
 
 interface Department {
   id: string;
@@ -72,6 +75,31 @@ const mockDepartments: Department[] = [
 ];
 
 export default function Departments() {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingDepartment, setEditingDepartment] = useState<Department | null>(null);
+
+  const handleEdit = (dept: Department) => {
+    setEditingDepartment(dept);
+    setDialogOpen(true);
+  };
+
+  const handleDelete = (id: string) => {
+    toast.success("Đã xóa phòng ban thành công");
+  };
+
+  const handleAddNew = () => {
+    setEditingDepartment(null);
+    setDialogOpen(true);
+  };
+
+  const handleSubmit = (data: any) => {
+    if (editingDepartment) {
+      toast.success("Đã cập nhật phòng ban!");
+    } else {
+      toast.success("Đã thêm phòng ban mới!");
+    }
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex justify-between items-center">
@@ -79,7 +107,7 @@ export default function Departments() {
           <h1 className="text-3xl font-bold text-foreground">Quản lý phòng ban</h1>
           <p className="text-muted-foreground mt-1">Quản lý cơ cấu tổ chức và phòng ban</p>
         </div>
-        <Button className="gap-2">
+        <Button className="gap-2" onClick={handleAddNew}>
           <Plus className="h-4 w-4" />
           Thêm phòng ban
         </Button>
@@ -160,10 +188,10 @@ export default function Departments() {
                   <TableCell className="text-muted-foreground">{dept.location}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button variant="ghost" size="icon">
+                      <Button variant="ghost" size="icon" onClick={() => handleEdit(dept)}>
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon">
+                      <Button variant="ghost" size="icon" onClick={() => handleDelete(dept.id)}>
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
                     </div>
@@ -174,6 +202,13 @@ export default function Departments() {
           </Table>
         </CardContent>
       </Card>
+
+      <DepartmentDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onSubmit={handleSubmit}
+        defaultValues={editingDepartment}
+      />
     </div>
   );
 }

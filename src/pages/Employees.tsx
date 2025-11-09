@@ -18,14 +18,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { UserPlus, Search, Pencil, Trash2 } from "lucide-react";
+import { UserPlus, Search, Edit, Trash2 } from "lucide-react";
 import { mockEmployees, DEPARTMENTS, POSITIONS, type Employee } from "@/data/mockData";
+import { EmployeeDialog } from "@/components/employees/EmployeeDialog";
+import { toast } from "sonner";
 
 export default function Employees() {
   const [employees] = useState<Employee[]>(mockEmployees);
   const [searchQuery, setSearchQuery] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
 
   const filteredEmployees = employees.filter(employee => {
     const matchesSearch = employee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -45,13 +49,26 @@ export default function Employees() {
   };
 
   const handleEdit = (employee: Employee) => {
-    // TODO: Implement edit functionality
-    console.log('Edit employee:', employee);
+    setEditingEmployee(employee);
+    setDialogOpen(true);
   };
 
   const handleDelete = (employeeId: string) => {
     // TODO: Implement delete functionality
-    console.log('Delete employee:', employeeId);
+    toast.success("Đã xóa nhân viên thành công");
+  };
+
+  const handleAddNew = () => {
+    setEditingEmployee(null);
+    setDialogOpen(true);
+  };
+
+  const handleSubmit = (data: any) => {
+    if (editingEmployee) {
+      toast.success("Đã cập nhật hồ sơ nhân viên!");
+    } else {
+      toast.success("Đã thêm nhân viên mới!");
+    }
   };
 
   return (
@@ -61,7 +78,7 @@ export default function Employees() {
           <h1 className="text-3xl font-bold text-foreground">Quản lý hồ sơ nhân viên</h1>
           <p className="text-muted-foreground mt-1">Xem và quản lý thông tin nhân viên</p>
         </div>
-        <Button className="gap-2">
+        <Button className="gap-2" onClick={handleAddNew}>
           <UserPlus className="h-4 w-4" />
           Thêm nhân viên
         </Button>
@@ -141,7 +158,7 @@ export default function Employees() {
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
                       <Button variant="ghost" size="icon" onClick={() => handleEdit(employee)}>
-                        <Pencil className="h-4 w-4" />
+                        <Edit className="h-4 w-4" />
                       </Button>
                       <Button variant="ghost" size="icon" onClick={() => handleDelete(employee.id)}>
                         <Trash2 className="h-4 w-4" />
@@ -154,6 +171,13 @@ export default function Employees() {
           </Table>
         </CardContent>
       </Card>
+      
+      <EmployeeDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onSubmit={handleSubmit}
+        defaultValues={editingEmployee}
+      />
     </div>
   );
 }

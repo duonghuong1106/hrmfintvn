@@ -128,10 +128,6 @@ export default function AttendancePayroll() {
             <Plus className="h-4 w-4 mr-2" />
             Thêm Bảng chấm công và lương
           </Button>
-          <Button variant="outline" onClick={handleCalculateSalary}>
-            <Calculator className="h-4 w-4 mr-2" />
-            Tính lương
-          </Button>
           <Button variant="outline" onClick={handleExportPDF}>
             <Download className="h-4 w-4 mr-2" />
             Xuất PDF
@@ -188,12 +184,7 @@ export default function AttendancePayroll() {
                     <TableRow key={record.id}>
                       <TableCell className="font-medium">{record.employeeId}</TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{employee.name}</span>
-                          <Badge variant="outline" className="text-xs">
-                            {employee.department}
-                          </Badge>
-                        </div>
+                        <span className="font-medium">{employee.name}</span>
                       </TableCell>
                       <TableCell>
                         <Badge variant="secondary">{employee.position}</Badge>

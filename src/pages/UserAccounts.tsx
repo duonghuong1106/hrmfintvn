@@ -32,6 +32,7 @@ import { UserPlus, Search, Edit, Trash2, Lock, Unlock } from "lucide-react";
 import { toast } from "sonner";
 
 import { DEPARTMENTS, USER_ROLES } from "@/data/mockData";
+import { EditUserAccountDialog } from "@/components/user-accounts/EditUserAccountDialog";
 
 interface UserAccount {
   id: string;
@@ -81,6 +82,8 @@ export default function UserAccounts() {
   const [accounts, setAccounts] = useState<UserAccount[]>(mockAccounts);
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editingAccount, setEditingAccount] = useState<UserAccount | null>(null);
 
   const filteredAccounts = accounts.filter(account =>
     account.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -102,6 +105,20 @@ export default function UserAccounts() {
     toast.success("Đã xóa tài khoản thành công");
   };
 
+  const handleEdit = (account: UserAccount) => {
+    setEditingAccount(account);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleSubmitEdit = (data: any) => {
+    toast.success("Đã cập nhật tài khoản thành công");
+  };
+
+  const handleSubmitAdd = (data: any) => {
+    toast.success("Đã tạo tài khoản thành công");
+    setIsAddDialogOpen(false);
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex justify-between items-center">
@@ -109,81 +126,10 @@ export default function UserAccounts() {
           <h1 className="text-3xl font-bold text-foreground">Quản lý tài khoản người dùng</h1>
           <p className="text-muted-foreground mt-1">Quản lý tài khoản và phân quyền hệ thống</p>
         </div>
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="gap-2">
-              <UserPlus className="h-4 w-4" />
-              Thêm tài khoản
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="bg-popover">
-            <DialogHeader>
-              <DialogTitle>Tạo tài khoản người dùng mới</DialogTitle>
-              <DialogDescription>
-                Thêm tài khoản người dùng mới vào hệ thống. Tất cả các trường đều bắt buộc.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="fullname">Họ và tên</Label>
-                <Input id="fullname" placeholder="Nhập họ và tên" />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="user@company.com" />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="username">Tên đăng nhập</Label>
-                <Input id="username" placeholder="tendangnhap" />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="password">Mật khẩu</Label>
-                <Input id="password" type="password" placeholder="••••••••" />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="role">Vai trò</Label>
-                <Select>
-                  <SelectTrigger id="role">
-                    <SelectValue placeholder="Chọn vai trò" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    {USER_ROLES.map((role) => (
-                      <SelectItem key={role} value={role}>
-                        {role}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="department">Phòng ban</Label>
-                <Select>
-                  <SelectTrigger id="department">
-                    <SelectValue placeholder="Chọn phòng ban" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-popover">
-                    {DEPARTMENTS.map((dept) => (
-                      <SelectItem key={dept} value={dept}>
-                        {dept}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Hủy
-              </Button>
-              <Button onClick={() => {
-                toast.success("Đã tạo tài khoản thành công");
-                setIsAddDialogOpen(false);
-              }}>
-                Tạo tài khoản
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <Button className="gap-2" onClick={() => setIsAddDialogOpen(true)}>
+          <UserPlus className="h-4 w-4" />
+          Thêm tài khoản
+        </Button>
       </div>
 
       <Card>
@@ -233,7 +179,7 @@ export default function UserAccounts() {
                   <TableCell>{account.createdDate}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button variant="ghost" size="icon">
+                      <Button variant="ghost" size="icon" onClick={() => handleEdit(account)}>
                         <Edit className="h-4 w-4" />
                       </Button>
                       <Button
@@ -262,6 +208,19 @@ export default function UserAccounts() {
           </Table>
         </CardContent>
       </Card>
+
+      <EditUserAccountDialog
+        open={isAddDialogOpen}
+        onOpenChange={setIsAddDialogOpen}
+        onSubmit={handleSubmitAdd}
+      />
+
+      <EditUserAccountDialog
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        onSubmit={handleSubmitEdit}
+        defaultValues={editingAccount}
+      />
     </div>
   );
 }
