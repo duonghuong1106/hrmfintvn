@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -17,33 +18,55 @@ interface AttendanceRecord {
   id: string;
   employeeId: string;
   employeeName: string;
+  department: string;
+  position: string;
   workingDays: number;
-  leaveDays: number;
+  paidLeaveDays: number;
   unpaidLeaveDays: number;
   lateDays: number;
   overtimeHours: number;
+  month: string;
 }
 
 const mockAttendanceData: AttendanceRecord[] = [
   {
     id: "1",
     employeeId: "NV001",
-    employeeName: "Nguyễn Văn A",
+    employeeName: "Nguyễn Văn An",
+    department: "Trung tâm sản xuất phần mềm",
+    position: "Developer",
     workingDays: 22,
-    leaveDays: 1,
+    paidLeaveDays: 1,
     unpaidLeaveDays: 0,
     lateDays: 2,
     overtimeHours: 10,
+    month: "2025-01",
   },
   {
     id: "2",
     employeeId: "NV002",
-    employeeName: "Trần Thị B",
+    employeeName: "Trần Thị Bình",
+    department: "Phòng kinh doanh",
+    position: "Business",
     workingDays: 23,
-    leaveDays: 0,
-    unpaidLeaveDays: 0,
+    paidLeaveDays: 0,
+    unpaidLeaveDays: 1,
     lateDays: 0,
     overtimeHours: 15,
+    month: "2025-01",
+  },
+  {
+    id: "3",
+    employeeId: "NV003",
+    employeeName: "Phạm Minh Châu",
+    department: "Phòng giải pháp",
+    position: "Analyst",
+    workingDays: 20,
+    paidLeaveDays: 2,
+    unpaidLeaveDays: 0,
+    lateDays: 1,
+    overtimeHours: 8,
+    month: "2025-01",
   },
 ];
 
@@ -51,7 +74,20 @@ const Attendance = () => {
   const [attendanceData, setAttendanceData] = useState<AttendanceRecord[]>(mockAttendanceData);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<AttendanceRecord | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [monthFilter, setMonthFilter] = useState("all");
+  const [departmentFilter, setDepartmentFilter] = useState("all");
   const { toast } = useToast();
+
+  const filteredData = attendanceData.filter((record) => {
+    const matchesSearch =
+      record.employeeId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      record.employeeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      record.department.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesMonth = monthFilter === "all" || record.month === monthFilter;
+    const matchesDepartment = departmentFilter === "all" || record.department === departmentFilter;
+    return matchesSearch && matchesMonth && matchesDepartment;
+  });
 
   const handleAddRecord = () => {
     setEditingRecord(null);
@@ -113,6 +149,42 @@ const Attendance = () => {
 
       <Card>
         <CardHeader>
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative flex-1">
+              <Input
+                placeholder="Tìm theo mã NV, tên, phòng ban..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <select
+              className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
+              value={monthFilter}
+              onChange={(e) => setMonthFilter(e.target.value)}
+            >
+              <option value="all">Tất cả tháng</option>
+              <option value="2025-01">Tháng 1/2025</option>
+              <option value="2024-12">Tháng 12/2024</option>
+              <option value="2024-11">Tháng 11/2024</option>
+            </select>
+            <select
+              className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
+              value={departmentFilter}
+              onChange={(e) => setDepartmentFilter(e.target.value)}
+            >
+              <option value="all">Tất cả phòng ban</option>
+              <option value="Trung tâm sản xuất phần mềm">Trung tâm sản xuất phần mềm</option>
+              <option value="Phòng kinh doanh">Phòng kinh doanh</option>
+              <option value="Phòng giải pháp">Phòng giải pháp</option>
+              <option value="Phòng Tài chính - kế toán">Phòng Tài chính - kế toán</option>
+              <option value="Phòng Hành chính nhân sự">Phòng Hành chính nhân sự</option>
+            </select>
+          </div>
+        </CardHeader>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>Danh sách chấm công</CardTitle>
         </CardHeader>
         <CardContent>
@@ -121,8 +193,10 @@ const Attendance = () => {
               <TableRow>
                 <TableHead>Mã NV</TableHead>
                 <TableHead>Tên nhân viên</TableHead>
+                <TableHead>Phòng ban</TableHead>
+                <TableHead>Chức vụ</TableHead>
                 <TableHead>Ngày công</TableHead>
-                <TableHead>Ngày nghỉ</TableHead>
+                <TableHead>Nghỉ phép</TableHead>
                 <TableHead>Nghỉ không lương</TableHead>
                 <TableHead>Ngày đi muộn</TableHead>
                 <TableHead>Giờ tăng ca</TableHead>
@@ -130,14 +204,16 @@ const Attendance = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {attendanceData.map((record) => (
+              {filteredData.map((record) => (
                 <TableRow key={record.id}>
                   <TableCell className="font-medium">{record.employeeId}</TableCell>
                   <TableCell>{record.employeeName}</TableCell>
+                  <TableCell>{record.department}</TableCell>
+                  <TableCell>{record.position}</TableCell>
                   <TableCell>{record.workingDays}</TableCell>
-                  <TableCell>{record.leaveDays}</TableCell>
-                  <TableCell>{record.unpaidLeaveDays}</TableCell>
-                  <TableCell>{record.lateDays}</TableCell>
+                  <TableCell>{record.paidLeaveDays}</TableCell>
+                  <TableCell className="text-red-600 dark:text-red-400">{record.unpaidLeaveDays}</TableCell>
+                  <TableCell className="text-red-600 dark:text-red-400">{record.lateDays}</TableCell>
                   <TableCell>{record.overtimeHours}h</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">

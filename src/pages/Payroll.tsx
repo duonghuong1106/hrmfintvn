@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -17,6 +18,8 @@ interface PayrollRecord {
   id: string;
   employeeId: string;
   employeeName: string;
+  department: string;
+  position: string;
   baseSalary: number;
   bonus: number;
   allowance: number;
@@ -24,13 +27,16 @@ interface PayrollRecord {
   socialInsurance: number;
   fine: number;
   totalSalary: number;
+  month: string;
 }
 
 const mockPayrollData: PayrollRecord[] = [
   {
     id: "1",
     employeeId: "NV001",
-    employeeName: "Nguyễn Văn A",
+    employeeName: "Nguyễn Văn An",
+    department: "Trung tâm sản xuất phần mềm",
+    position: "Developer",
     baseSalary: 15000000,
     bonus: 2000000,
     allowance: 1000000,
@@ -38,11 +44,14 @@ const mockPayrollData: PayrollRecord[] = [
     socialInsurance: 1200000,
     fine: 0,
     totalSalary: 15300000,
+    month: "2025-01",
   },
   {
     id: "2",
     employeeId: "NV002",
-    employeeName: "Trần Thị B",
+    employeeName: "Trần Thị Bình",
+    department: "Phòng kinh doanh",
+    position: "Business",
     baseSalary: 18000000,
     bonus: 3000000,
     allowance: 1500000,
@@ -50,6 +59,22 @@ const mockPayrollData: PayrollRecord[] = [
     socialInsurance: 1500000,
     fine: 500000,
     totalSalary: 18500000,
+    month: "2025-01",
+  },
+  {
+    id: "3",
+    employeeId: "NV003",
+    employeeName: "Phạm Minh Châu",
+    department: "Phòng giải pháp",
+    position: "Analyst",
+    baseSalary: 16000000,
+    bonus: 1500000,
+    allowance: 1200000,
+    tax: 1800000,
+    socialInsurance: 1300000,
+    fine: 200000,
+    totalSalary: 15400000,
+    month: "2025-01",
   },
 ];
 
@@ -57,7 +82,20 @@ const Payroll = () => {
   const [payrollData, setPayrollData] = useState<PayrollRecord[]>(mockPayrollData);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<PayrollRecord | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [monthFilter, setMonthFilter] = useState("all");
+  const [departmentFilter, setDepartmentFilter] = useState("all");
   const { toast } = useToast();
+
+  const filteredData = payrollData.filter((record) => {
+    const matchesSearch =
+      record.employeeId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      record.employeeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      record.department.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesMonth = monthFilter === "all" || record.month === monthFilter;
+    const matchesDepartment = departmentFilter === "all" || record.department === departmentFilter;
+    return matchesSearch && matchesMonth && matchesDepartment;
+  });
 
   const handleAddRecord = () => {
     setEditingRecord(null);
@@ -137,6 +175,42 @@ const Payroll = () => {
 
       <Card>
         <CardHeader>
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative flex-1">
+              <Input
+                placeholder="Tìm theo mã NV, tên, phòng ban..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <select
+              className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
+              value={monthFilter}
+              onChange={(e) => setMonthFilter(e.target.value)}
+            >
+              <option value="all">Tất cả tháng</option>
+              <option value="2025-01">Tháng 1/2025</option>
+              <option value="2024-12">Tháng 12/2024</option>
+              <option value="2024-11">Tháng 11/2024</option>
+            </select>
+            <select
+              className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
+              value={departmentFilter}
+              onChange={(e) => setDepartmentFilter(e.target.value)}
+            >
+              <option value="all">Tất cả phòng ban</option>
+              <option value="Trung tâm sản xuất phần mềm">Trung tâm sản xuất phần mềm</option>
+              <option value="Phòng kinh doanh">Phòng kinh doanh</option>
+              <option value="Phòng giải pháp">Phòng giải pháp</option>
+              <option value="Phòng Tài chính - kế toán">Phòng Tài chính - kế toán</option>
+              <option value="Phòng Hành chính nhân sự">Phòng Hành chính nhân sự</option>
+            </select>
+          </div>
+        </CardHeader>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>Danh sách bảng lương</CardTitle>
         </CardHeader>
         <CardContent>
@@ -145,6 +219,8 @@ const Payroll = () => {
               <TableRow>
                 <TableHead>Mã NV</TableHead>
                 <TableHead>Tên nhân viên</TableHead>
+                <TableHead>Phòng ban</TableHead>
+                <TableHead>Chức vụ</TableHead>
                 <TableHead>Lương cơ bản</TableHead>
                 <TableHead>Tiền thưởng</TableHead>
                 <TableHead>Trợ cấp</TableHead>
@@ -156,17 +232,19 @@ const Payroll = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {payrollData.map((record) => (
+              {filteredData.map((record) => (
                 <TableRow key={record.id}>
                   <TableCell className="font-medium">{record.employeeId}</TableCell>
                   <TableCell>{record.employeeName}</TableCell>
+                  <TableCell>{record.department}</TableCell>
+                  <TableCell>{record.position}</TableCell>
                   <TableCell>{formatCurrency(record.baseSalary)}</TableCell>
-                  <TableCell>{formatCurrency(record.bonus)}</TableCell>
-                  <TableCell>{formatCurrency(record.allowance)}</TableCell>
-                  <TableCell>{formatCurrency(record.tax)}</TableCell>
-                  <TableCell>{formatCurrency(record.socialInsurance)}</TableCell>
-                  <TableCell>{formatCurrency(record.fine)}</TableCell>
-                  <TableCell className="font-semibold">
+                  <TableCell className="text-green-600 dark:text-green-400">{formatCurrency(record.bonus)}</TableCell>
+                  <TableCell className="text-green-600 dark:text-green-400">{formatCurrency(record.allowance)}</TableCell>
+                  <TableCell className="text-red-600 dark:text-red-400">{formatCurrency(record.tax)}</TableCell>
+                  <TableCell className="text-red-600 dark:text-red-400">{formatCurrency(record.socialInsurance)}</TableCell>
+                  <TableCell className="text-red-600 dark:text-red-400">{formatCurrency(record.fine)}</TableCell>
+                  <TableCell className="font-semibold text-blue-600 dark:text-blue-400">
                     {formatCurrency(record.totalSalary)}
                   </TableCell>
                   <TableCell className="text-right">

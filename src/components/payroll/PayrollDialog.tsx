@@ -22,12 +22,15 @@ import { Button } from "@/components/ui/button";
 const payrollSchema = z.object({
   employeeId: z.string().min(1, "Mã nhân viên là bắt buộc"),
   employeeName: z.string().min(1, "Tên nhân viên là bắt buộc"),
+  department: z.string().min(1, "Phòng ban là bắt buộc"),
+  position: z.string().min(1, "Chức vụ là bắt buộc"),
   baseSalary: z.coerce.number().min(0, "Lương cơ bản phải lớn hơn hoặc bằng 0"),
   bonus: z.coerce.number().min(0, "Tiền thưởng phải lớn hơn hoặc bằng 0"),
   allowance: z.coerce.number().min(0, "Trợ cấp phải lớn hơn hoặc bằng 0"),
   tax: z.coerce.number().min(0, "Thuế phải lớn hơn hoặc bằng 0"),
   socialInsurance: z.coerce.number().min(0, "BHXH phải lớn hơn hoặc bằng 0"),
   fine: z.coerce.number().min(0, "Tiền phạt phải lớn hơn hoặc bằng 0"),
+  month: z.string().min(1, "Tháng là bắt buộc"),
 });
 
 type PayrollFormValues = z.infer<typeof payrollSchema>;
@@ -50,12 +53,15 @@ export function PayrollDialog({
     defaultValues: {
       employeeId: "",
       employeeName: "",
+      department: "",
+      position: "",
       baseSalary: 0,
       bonus: 0,
       allowance: 0,
       tax: 0,
       socialInsurance: 0,
       fine: 0,
+      month: "",
     },
   });
 
@@ -66,12 +72,15 @@ export function PayrollDialog({
       form.reset({
         employeeId: "",
         employeeName: "",
+        department: "",
+        position: "",
         baseSalary: 0,
         bonus: 0,
         allowance: 0,
         tax: 0,
         socialInsurance: 0,
         fine: 0,
+        month: "",
       });
     }
   }, [defaultValues, form]);
@@ -117,6 +126,34 @@ export function PayrollDialog({
                     <FormLabel>Tên nhân viên *</FormLabel>
                     <FormControl>
                       <Input placeholder="Nhập tên nhân viên" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="department"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phòng ban *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Nhập phòng ban" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="position"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Chức vụ *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Nhập chức vụ" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -201,6 +238,20 @@ export function PayrollDialog({
                     <FormLabel>Tiền phạt (VNĐ) *</FormLabel>
                     <FormControl>
                       <Input type="number" placeholder="0" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="month"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tháng *</FormLabel>
+                    <FormControl>
+                      <Input type="month" placeholder="2025-01" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
