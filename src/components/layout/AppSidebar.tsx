@@ -1,10 +1,10 @@
 import { NavLink } from "react-router-dom";
 import {
   LayoutDashboard,
-  Users,
   UserCircle,
   FileText,
   Clock,
+  DollarSign,
   Building2,
   BarChart3,
 } from "lucide-react";
@@ -22,10 +22,10 @@ import {
 
 const menuItems = [
   { title: "Tổng quan", url: "/", icon: LayoutDashboard },
-  { title: "Tài khoản người dùng", url: "/accounts", icon: Users },
   { title: "Hồ sơ nhân viên", url: "/employees", icon: UserCircle },
   { title: "Hợp đồng lao động", url: "/contracts", icon: FileText },
-  { title: "Chấm công & Lương", url: "/attendance", icon: Clock },
+  { title: "Quản lý chấm công", url: "/attendance", icon: Clock },
+  { title: "Quản lý lương", url: "/payroll", icon: DollarSign },
   { title: "Phòng ban", url: "/departments", icon: Building2 },
   { title: "Báo cáo & Thống kê", url: "/reports", icon: BarChart3 },
 ];
