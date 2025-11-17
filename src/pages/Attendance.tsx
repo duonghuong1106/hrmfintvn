@@ -13,6 +13,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Edit, Trash2, Printer } from "lucide-react";
 import { AttendanceDialog } from "@/components/attendance/AttendanceDialog";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface AttendanceRecord {
   id: string;
@@ -47,7 +58,7 @@ const mockAttendanceData: AttendanceRecord[] = [
     employeeId: "NV002",
     employeeName: "Trần Thị Bình",
     department: "Phòng kinh doanh",
-    position: "Business",
+    position: "Business Analyst",
     workingDays: 23,
     paidLeaveDays: 0,
     unpaidLeaveDays: 1,
@@ -60,7 +71,7 @@ const mockAttendanceData: AttendanceRecord[] = [
     employeeId: "NV003",
     employeeName: "Phạm Minh Châu",
     department: "Phòng giải pháp",
-    position: "Analyst",
+    position: "Trưởng phòng dự án",
     workingDays: 20,
     paidLeaveDays: 2,
     unpaidLeaveDays: 0,
@@ -348,13 +359,30 @@ const Attendance = () => {
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDeleteRecord(record.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Xác nhận xoá</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Bạn có chắc chắn muốn xoá thông tin này?
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Huỷ</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDeleteRecord(record.id)}>
+                              Xoá
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </TableCell>
                 </TableRow>

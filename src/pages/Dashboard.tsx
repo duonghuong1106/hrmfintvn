@@ -9,18 +9,17 @@ import { PieChart, Pie, Cell, BarChart, Bar, LineChart, Line, XAxis, YAxis, Cart
 const COLORS = ['#3b82f6', '#ef4444', '#22c55e', '#f59e0b'];
 
 const genderData = [
-  { name: 'Nam', value: 156 },
-  { name: 'Nữ', value: 124 },
-  { name: 'Khác', value: 8 },
+  { name: 'Nam', value: 84 },
+  { name: 'Nữ', value: 40 },
+  { name: 'Khác', value: 0 },
 ];
 
 const departmentData = [
-  { name: 'Kỹ thuật', employees: 78 },
-  { name: 'Kinh doanh', employees: 45 },
-  { name: 'Marketing', employees: 32 },
+  { name: 'Kỹ thuật', employees: 45 },
+  { name: 'Kinh doanh', employees: 32 },
   { name: 'Nhân sự', employees: 15 },
-  { name: 'Tài chính', employees: 28 },
-  { name: 'Giải pháp', employees: 42 },
+  { name: 'Tài chính', employees: 18 },
+  { name: 'Giải pháp', employees: 14 },
 ];
 
 const salaryData = [
@@ -151,12 +150,12 @@ export default function Dashboard() {
           <div class="stats-grid">
             <div class="stat-card">
               <div class="stat-title">Tổng nhân viên</div>
-              <div class="stat-value">138</div>
+              <div class="stat-value">124</div>
               <div class="stat-change">+12 so với tháng trước</div>
             </div>
             <div class="stat-card">
               <div class="stat-title">Hợp đồng đang hiệu lực</div>
-              <div class="stat-value">118</div>
+              <div class="stat-value">105</div>
               <div class="stat-change">85% tổng số nhân viên</div>
             </div>
             <div class="stat-card">
@@ -183,18 +182,18 @@ export default function Dashboard() {
             <tbody>
               <tr>
                 <td>Nam</td>
-                <td>156</td>
-                <td>54%</td>
+                <td>84</td>
+                <td>68%</td>
               </tr>
               <tr>
                 <td>Nữ</td>
-                <td>124</td>
-                <td>43%</td>
+                <td>40</td>
+                <td>32%</td>
               </tr>
               <tr>
                 <td>Khác</td>
-                <td>8</td>
-                <td>3%</td>
+                <td>0</td>
+                <td>0%</td>
               </tr>
             </tbody>
           </table>
@@ -208,12 +207,11 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              <tr><td>Kỹ thuật</td><td>78</td></tr>
-              <tr><td>Kinh doanh</td><td>45</td></tr>
-              <tr><td>Marketing</td><td>32</td></tr>
+              <tr><td>Kỹ thuật</td><td>45</td></tr>
+              <tr><td>Kinh doanh</td><td>32</td></tr>
               <tr><td>Nhân sự</td><td>15</td></tr>
-              <tr><td>Tài chính</td><td>28</td></tr>
-              <tr><td>Giải pháp</td><td>42</td></tr>
+              <tr><td>Tài chính</td><td>18</td></tr>
+              <tr><td>Giải pháp</td><td>14</td></tr>
             </tbody>
           </table>
 
@@ -315,7 +313,7 @@ export default function Dashboard() {
             <Users className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-foreground">288</div>
+            <div className="text-3xl font-bold text-foreground">124</div>
             <p className="text-xs text-muted-foreground mt-1">
               <TrendingUp className="h-3 w-3 inline mr-1" />
               +12 so với tháng trước
@@ -329,7 +327,7 @@ export default function Dashboard() {
             <FileText className="h-5 w-5 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-foreground">245</div>
+            <div className="text-3xl font-bold text-foreground">105</div>
             <p className="text-xs text-muted-foreground mt-1">85% tổng số nhân viên</p>
           </CardContent>
         </Card>
@@ -340,8 +338,8 @@ export default function Dashboard() {
             <Building2 className="h-5 w-5 text-orange-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-foreground">12</div>
-            <p className="text-xs text-muted-foreground mt-1">6 văn phòng khu vực</p>
+            <div className="text-3xl font-bold text-foreground">5</div>
+            <p className="text-xs text-muted-foreground mt-1">3 văn phòng khu vực</p>
           </CardContent>
         </Card>
 

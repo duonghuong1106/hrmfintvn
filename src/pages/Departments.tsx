@@ -13,6 +13,17 @@ import {
 import { Building2, Users, Edit, Trash2, Plus } from "lucide-react";
 import { DepartmentDialog } from "@/components/departments/DepartmentDialog";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface Department {
   id: string;
@@ -45,7 +56,7 @@ const mockDepartments: Department[] = [
     departmentId: 'DEPT-003',
     name: 'Phòng giải pháp',
     manager: 'Phạm Quang Minh',
-    employeeCount: 28,
+    employeeCount: 14,
     location: 'Phòng 501, toà nhà D\'office, tổ 28, phố Thành Thái, Phường Dịch Vọng, Quận Cầu Giấy, Thành phố Hà Nội, Việt Nam',
   },
   {
@@ -183,9 +194,27 @@ export default function Departments() {
                       <Button variant="ghost" size="icon" onClick={() => handleEdit(dept)}>
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleDelete(dept.id)}>
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Xác nhận xoá</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Bạn có chắc chắn muốn xoá thông tin này?
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Huỷ</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDelete(dept.id)}>
+                              Xoá
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </TableCell>
                 </TableRow>

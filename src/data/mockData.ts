@@ -11,8 +11,8 @@ export const DEPARTMENTS = [
 
 // Standard positions across the system
 export const POSITIONS = [
-  'Business',
-  'Analyst',
+  'Business Analyst',
+  'Trưởng phòng dự án',
   'Tester',
   'Developer',
   'Hành chính',
@@ -56,7 +56,7 @@ export const mockEmployees: Employee[] = [
     name: 'Trần Thị Bình',
     gender: 'Nữ',
     department: 'Phòng kinh doanh',
-    position: 'Business',
+    position: 'Business Analyst',
     status: 'active',
     email: 'tran.thi.binh@company.com',
     phone: '0912-345-679',
@@ -67,7 +67,7 @@ export const mockEmployees: Employee[] = [
     name: 'Phạm Minh Châu',
     gender: 'Nữ',
     department: 'Phòng giải pháp',
-    position: 'Analyst',
+    position: 'Trưởng phòng dự án',
     status: 'active',
     email: 'pham.minh.chau@company.com',
     phone: '0912-345-680',
@@ -111,7 +111,7 @@ export const mockEmployees: Employee[] = [
     name: 'Lê Văn Cường',
     gender: 'Nam',
     department: 'Phòng kinh doanh',
-    position: 'Business',
+    position: 'Business Analyst',
     status: 'active',
     email: 'le.van.cuong@company.com',
     phone: '0912-345-684',

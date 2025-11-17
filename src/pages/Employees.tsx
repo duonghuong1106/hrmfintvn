@@ -22,29 +22,45 @@ import { UserPlus, Search, Edit, Trash2 } from "lucide-react";
 import { mockEmployees, DEPARTMENTS, POSITIONS, type Employee } from "@/data/mockData";
 import { EmployeeDialog } from "@/components/employees/EmployeeDialog";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function Employees() {
   const [employees] = useState<Employee[]>(mockEmployees);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [departmentFilter, setDepartmentFilter] = useState('all');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [departmentFilter, setDepartmentFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
 
-  const filteredEmployees = employees.filter(employee => {
-    const matchesSearch = employee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         employee.employeeId.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesDepartment = departmentFilter === 'all' || employee.department === departmentFilter;
-    const matchesStatus = statusFilter === 'all' || employee.status === statusFilter;
+  const filteredEmployees = employees.filter((employee) => {
+    const matchesSearch =
+      employee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      employee.employeeId.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesDepartment = departmentFilter === "all" || employee.department === departmentFilter;
+    const matchesStatus = statusFilter === "all" || employee.status === statusFilter;
     return matchesSearch && matchesDepartment && matchesStatus;
   });
 
   const getStatusVariant = (status: string) => {
     switch (status) {
-      case 'active': return 'default';
-      case 'on-leave': return 'secondary';
-      case 'terminated': return 'destructive';
-      default: return 'outline';
+      case "active":
+        return "default";
+      case "on-leave":
+        return "secondary";
+      case "terminated":
+        return "destructive";
+      default:
+        return "outline";
     }
   };
 
@@ -160,9 +176,27 @@ export default function Employees() {
                       <Button variant="ghost" size="icon" onClick={() => handleEdit(employee)}>
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleDelete(employee.id)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Xác nhận xoá</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Bạn có chắc chắn muốn xoá thông tin này?
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Huỷ</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDelete(employee.id)}>
+                              Xoá
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </TableCell>
                 </TableRow>

@@ -13,6 +13,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Edit, Trash2, Printer } from "lucide-react";
 import { PayrollDialog } from "@/components/payroll/PayrollDialog";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface PayrollRecord {
   id: string;
@@ -51,7 +62,7 @@ const mockPayrollData: PayrollRecord[] = [
     employeeId: "NV002",
     employeeName: "Trần Thị Bình",
     department: "Phòng kinh doanh",
-    position: "Business",
+    position: "Business Analyst",
     baseSalary: 18000000,
     bonus: 3000000,
     allowance: 1500000,
@@ -66,7 +77,7 @@ const mockPayrollData: PayrollRecord[] = [
     employeeId: "NV003",
     employeeName: "Phạm Minh Châu",
     department: "Phòng giải pháp",
-    position: "Analyst",
+    position: "Trưởng phòng dự án",
     baseSalary: 16000000,
     bonus: 1500000,
     allowance: 1200000,
@@ -393,13 +404,30 @@ const Payroll = () => {
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDeleteRecord(record.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Xác nhận xoá</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Bạn có chắc chắn muốn xoá thông tin này?
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Huỷ</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDeleteRecord(record.id)}>
+                              Xoá
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </TableCell>
                 </TableRow>
